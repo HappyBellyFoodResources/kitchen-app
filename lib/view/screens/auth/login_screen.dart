@@ -59,7 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(
                         width: 100,
                         height: Get.height < 700 ? 100 : 150,
-                        child: Image.asset(Images.loginLogo)),
+                        child: Image.asset(Images.logo)),
                     Text('login'.tr,
                         style: robotoMedium.copyWith(
                             fontSize: Dimensions.fontSizeExtraLarge)),
@@ -83,21 +83,6 @@ class _LoginScreenState extends State<LoginScreen> {
                               margin: const EdgeInsets.only(
                                   top: Dimensions.paddingSizeDefault),
                               child: Row(children: [
-                                CodePickerWidget(
-                                  onChanged: (CountryCode countryCode) {
-                                    _countryDialCode = countryCode.code!;
-                                  },
-                                  initialSelection: _countryDialCode,
-                                  favorite: [_countryDialCode!],
-                                  showDropDownButton: true,
-                                  padding: EdgeInsets.zero,
-                                  showFlagMain: true,
-                                  textStyle: TextStyle(
-                                      color: Theme.of(context)
-                                          .textTheme
-                                          .displayLarge!
-                                          .color!),
-                                ),
                                 Container(
                                     height: 40,
                                     width: 1,
@@ -168,8 +153,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 onPressed: () {
                                   String phoneNumber =
                                       phoneNumberController.text.trim();
-                                  String phoneNumberWithCountryCode =
-                                      '${CountryCode.fromCountryCode(_countryDialCode!).dialCode}${phoneNumberController.text.trim()}';
                                   String password =
                                       passwordController.text.trim();
                                   if (phoneNumber.isEmpty) {
@@ -192,8 +175,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           .clearUserNumberAndPassword();
                                     }
                                     Get.find<AuthController>()
-                                        .login(phoneNumberWithCountryCode,
-                                            password)
+                                        .login(phoneNumber, password)
                                         .then((value) {
                                       if (value.statusCode == 200) {
                                         Get.toNamed(RouteHelper.home);

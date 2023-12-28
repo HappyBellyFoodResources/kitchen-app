@@ -99,7 +99,6 @@ class _SplashScreenState extends State<SplashScreen> {
               children: [
                 const Spacer(),
                 Image.asset(Images.logo, height: 175),
-                Image.asset(Images.logoName, height: 50),
                 Text(AppConstants.appName,
                     style: robotoBlack.copyWith(
                         color: Theme.of(context).primaryColor)),

@@ -46,7 +46,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
               centerTitle: true,
               automaticallyImplyLeading: false,
               backgroundColor: Theme.of(context).highlightColor,
-              title: Image.asset(Images.logoWithName, height: 35),
+              title: Image.asset(Images.logo, height: 35),
             ),
 
             // Search Button

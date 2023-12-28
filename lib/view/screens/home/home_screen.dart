@@ -103,7 +103,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       children: [
                         SizedBox(
                           height: 50,
-                          child: Image.asset(Images.logoWithName, height: 35),
+                          child: Image.asset(Images.logo, height: 35),
                         ),
                         searchView(context),
                         Container(

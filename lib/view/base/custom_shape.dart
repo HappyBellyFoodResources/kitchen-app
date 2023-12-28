@@ -6,8 +6,8 @@ class CurvedPainter extends CustomPainter {
     var paint = Paint()
       ..shader = const LinearGradient(
         colors: [
-          Color(0xFFFF6F70),
-          Color(0xFFFBB35F)
+          Color.fromARGB(255, 200, 54, 1),
+          Color.fromARGB(255, 233, 171, 3)
         ],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
