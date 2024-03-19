@@ -104,7 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               controller: passwordController,
                               focusNode: passwordFocusNode,
                               inputAction: TextInputAction.done,
-                              inputType: TextInputType.phone,
+                              inputType: TextInputType.text,
                               isPassword: true,
                               prefixIcon: Images.lock,
                             ),

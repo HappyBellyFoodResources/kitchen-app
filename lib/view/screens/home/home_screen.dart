@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:happy_belly_kitchen/controller/order_controller.dart';
 import 'package:happy_belly_kitchen/helper/responsive_helper.dart';
 import 'package:happy_belly_kitchen/util/dimensions.dart';
@@ -30,11 +32,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     await Get.find<OrderController>().getOrderList(1);
   }
 
+  Timer? timer;
+
   @override
   void initState() {
     if (!widget.fromFilter) {
       loadData();
     }
+    // timer = Timer.periodic(const Duration(seconds: 10), (timer) {
+    //   loadData();
+    // });
 
     super.initState();
     _tabController = TabController(
@@ -65,6 +72,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         }
       }
     });
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
   }
 
   @override
