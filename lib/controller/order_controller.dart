@@ -93,9 +93,11 @@ class OrderController extends GetxController implements GetxService {
     Tab(text: 'done'.tr),
   ];
 
-  Future<void> getOrderList(int offset, {bool reload = true}) async {
+  Future<void> getOrderList(int offset,
+      {bool reload = true, bool refetch = false}) async {
     _offset = offset;
-    _isLoading = true;
+
+    if (refetch == false) _isLoading = true;
 
     if (reload || (offset == 1)) {
       _orderList = null;

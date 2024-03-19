@@ -39,9 +39,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     if (!widget.fromFilter) {
       loadData();
     }
-    // timer = Timer.periodic(const Duration(seconds: 10), (timer) {
-    //   loadData();
-    // });
+    timer = Timer.periodic(const Duration(seconds: 30), (timer) {
+      Get.find<OrderController>().getOrderList(1, refetch: true);
+    });
 
     super.initState();
     _tabController = TabController(
