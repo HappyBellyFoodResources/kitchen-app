@@ -94,7 +94,8 @@ class OrderedProductList extends StatelessWidget {
                                       orderController.orderDetails
                                           .details[index].productDetails!.name!,
                                       style: robotoMedium.copyWith(
-                                          fontSize: Dimensions.fontSizeDefault),
+                                          fontSize:
+                                              Dimensions.fontSizeExtraLarge),
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis)),
                               Text(
@@ -124,34 +125,31 @@ class OrderedProductList extends StatelessWidget {
                               : const SizedBox(),
 
                           addOns.isNotEmpty
-                              ? SizedBox(
-                                  height: 30,
-                                  child: ListView.builder(
-                                    shrinkWrap: true,
-                                    scrollDirection: Axis.horizontal,
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    itemCount: addOns.length,
-                                    itemBuilder: (context, item) {
-                                      return Row(
-                                        children: [
-                                          if (item == 0)
-                                            Text('${'add_ons'.tr} :',
+                              ? Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('${'add_ons'.tr} :',
+                                        style: robotoBold),
+                                    ListView.builder(
+                                      shrinkWrap: true,
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      itemCount: addOns.length,
+                                      itemBuilder: (context, item) {
+                                        return Row(
+                                          children: [
+                                            const SizedBox(width: 2),
+                                            Text(addOns[item].name ?? '',
                                                 style: robotoRegular),
-                                          const SizedBox(width: 2),
-                                          Text(addOns[item].name ?? '',
-                                              style: robotoRegular),
-                                          const SizedBox(width: 2),
-                                          Text(
-                                              '(${orderController.orderDetails.details[index].addOnQtys![item]})',
-                                              style: robotoRegular),
-                                          if (item + 1 != addOns.length)
-                                            const Text(' - ',
+                                            const SizedBox(width: 2),
+                                            Text(
+                                                ' x${orderController.orderDetails.details[index].addOnQtys![item]}',
                                                 style: robotoRegular),
-                                        ],
-                                      );
-                                    },
-                                  ),
+                                          ],
+                                        );
+                                      },
+                                    ),
+                                  ],
                                 )
                               : const SizedBox(),
 

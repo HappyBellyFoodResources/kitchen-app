@@ -6,6 +6,7 @@ import 'package:happy_belly_kitchen/view/base/custom_snackbar.dart';
 import 'package:happy_belly_kitchen/view/screens/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pull_to_refresh_plus/pull_to_refresh_plus.dart';
 
 enum OrderStatusTabs { all, confirmed, cooking, done }
 
@@ -17,6 +18,10 @@ class OrderController extends GetxController implements GetxService {
   List<Orders>? get orderList => _orderList;
   bool _isLoading = false;
   bool get isLoading => _isLoading;
+  set isLoading(bool value) {
+    _isLoading = value;
+  }
+
   final int _orderListLength = 0;
   int get orderListLength => _orderListLength;
   bool _isFirst = true;
@@ -76,7 +81,7 @@ class OrderController extends GetxController implements GetxService {
           } else if (_currentIndex == 2) {
             filterOrder("cooking", offset, reload: false);
           } else if (_currentIndex == 3) {
-            filterOrder("done", offset, reload: false);
+            filterOrder("ready_for_delivering", offset, reload: false);
           }
         } else {
           _isShadow = false;
@@ -97,27 +102,30 @@ class OrderController extends GetxController implements GetxService {
       {bool reload = true, bool refetch = false}) async {
     _offset = offset;
 
-    if (refetch == false) _isLoading = true;
-
-    if (reload || (offset == 1)) {
-      _orderList = null;
-      _isFirst = true;
-      updateOrderStatusTabs(OrderStatusTabs.all);
-      setIndex(0);
-    } else {
-      update();
+    if (refetch == false) {
+      _isLoading = true;
     }
 
     Response response = await orderRepo.getOrderList(offset);
     if (response.statusCode == 200) {
-      if (reload) {
-        _orderList = [];
-      }
       OrderModel orderModel = OrderModel.fromJson(response.body);
-      for (var order in orderModel.data!) {
-        _orderList!.add(order);
+      if (refetch == false) {
+        if (reload) {
+          _orderList = [];
+        }
+
+        for (var order in orderModel.data!) {
+          _orderList!.add(order);
+        }
+        _pageSize = orderModel.lastPage!;
+      } else {
+        List<Orders> tempList = [];
+        for (var order in orderModel.data!) {
+          tempList.add(order);
+        }
+        _orderList = tempList;
       }
-      _pageSize = orderModel.lastPage!;
+
       _orderLength = orderModel.total!;
     } else {
       ApiChecker.checkApi(response);
@@ -148,13 +156,16 @@ class OrderController extends GetxController implements GetxService {
   }
 
   Future<void> filterOrder(String orderType, int offset,
-      {bool reload = true}) async {
+      {bool reload = true, bool refetch = false}) async {
     _offset = offset;
-    _isLoading = true;
 
-    if (reload || (offset == 1)) {
-      _orderList = null;
-      _isFirst = true;
+    if (refetch == false) {
+      _isLoading = true;
+
+      if (reload || (offset == 1)) {
+        _orderList = null;
+        _isFirst = true;
+      }
     }
 
     setIndex(orderType == 'confirmed'
@@ -164,12 +175,22 @@ class OrderController extends GetxController implements GetxService {
             : 3);
     Response response = await orderRepo.filterOrder(orderType, offset);
     if (response.statusCode == 200) {
-      if (reload || (offset == 1)) {
-        _orderList = [];
-      }
       OrderModel orderModel = OrderModel.fromJson(response.body);
-      for (var order in orderModel.data!) {
-        _orderList!.add(order);
+
+      if (refetch == false) {
+        if (reload || (offset == 1)) {
+          _orderList = [];
+        }
+
+        for (var order in orderModel.data!) {
+          _orderList!.add(order);
+        }
+      } else {
+        List<Orders> tempList = [];
+        for (var order in orderModel.data!) {
+          tempList.add(order);
+        }
+        _orderList = tempList;
       }
     } else {
       ApiChecker.checkApi(response);
@@ -204,7 +225,7 @@ class OrderController extends GetxController implements GetxService {
         filterOrder('cooking', 1);
       } else {
         setIndex(3);
-        filterOrder('done', 1);
+        filterOrder('ready_for_delivering', 1);
       }
       showCustomSnackBar("order_status_updated_successfully".tr,
           isError: false);

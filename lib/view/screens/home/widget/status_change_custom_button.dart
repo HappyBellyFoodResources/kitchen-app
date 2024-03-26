@@ -105,9 +105,9 @@ class StatusChangeCustomButton extends StatelessWidget {
                         Get.find<OrderController>()
                             .updateOrderStatusTabs(OrderStatusTabs.done);
                         Get.find<OrderController>()
-                            .orderStatusUpdate(orderId, 'done');
-                        Get.find<OrderController>()
-                            .setOrderIdForOrderDetails(orderId, 'done', '');
+                            .orderStatusUpdate(orderId, 'ready_for_delivering');
+                        Get.find<OrderController>().setOrderIdForOrderDetails(
+                            orderId, 'ready_for_delivering', '');
                         Get.find<OrderController>().getOrderDetails(orderId);
                       },
                       label: Text('done_cooking'.tr,

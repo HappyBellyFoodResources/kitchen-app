@@ -632,6 +632,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.2.4"
+  pull_to_refresh_plus:
+    dependency: "direct main"
+    description:
+      name: pull_to_refresh_plus
+      sha256: "9f32957ea816efbe885bffdc9d66b3960e688b1c7ad1b850cc70e093609f4bea"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.3"
   rxdart:
     dependency: transitive
     description:

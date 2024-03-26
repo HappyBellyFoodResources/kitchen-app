@@ -34,14 +34,40 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   Timer? timer;
 
+  reload() {
+    debugPrint(
+        "===> current tab: ${_tabController!.index}, ${widget.fromFilter}");
+
+    if (_tabController?.indexIsChanging != null &&
+        _tabController!.indexIsChanging) {
+    } else {
+      switch (_tabController!.index) {
+        case 0:
+          Get.find<OrderController>().getOrderList(1, refetch: true);
+          break;
+        case 1:
+          Get.find<OrderController>()
+              .filterOrder('confirmed', 1, refetch: true);
+          break;
+        case 2:
+          Get.find<OrderController>().filterOrder('cooking', 1, refetch: true);
+          break;
+        case 3:
+          Get.find<OrderController>()
+              .filterOrder('ready_for_delivering', 1, refetch: true);
+          break;
+      }
+    }
+  }
+
   @override
   void initState() {
     if (!widget.fromFilter) {
       loadData();
     }
-    timer = Timer.periodic(const Duration(seconds: 30), (timer) {
-      Get.find<OrderController>().getOrderList(1, refetch: true);
-    });
+    // timer = Timer.periodic(const Duration(seconds: 120), (timer) {
+    //   reload();
+    // });
 
     super.initState();
     _tabController = TabController(
@@ -64,10 +90,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             break;
           case 2:
             Get.find<OrderController>().filterOrder('cooking', 1);
-
             break;
           case 3:
-            Get.find<OrderController>().filterOrder('done', 1);
+            Get.find<OrderController>().filterOrder('ready_for_delivering', 1);
             break;
         }
       }
@@ -128,37 +153,37 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             controller: _tabController,
                             indicatorColor: Theme.of(context).primaryColor,
                             indicatorWeight: 1,
-                            padding: EdgeInsets.symmetric(
-                              vertical: Dimensions.paddingSizeExtraSmall,
-                              horizontal: _tabController!.index == 0 ||
-                                      _tabController!.index == 3
-                                  ? Dimensions.paddingSizeSmall
-                                  : 0,
-                            ),
-                            indicator: BoxDecoration(
-                                borderRadius: BorderRadius.circular(50),
-                                color: _tabController!.index == 0
-                                    ? Theme.of(context).primaryColor
-                                    : _tabController!.index == 1
-                                        ? Theme.of(context)
-                                            .colorScheme
-                                            .primary
-                                            .withOpacity(.15)
-                                        : _tabController!.index == 2
-                                            ? Theme.of(context)
-                                                .primaryColor
-                                                .withOpacity(.15)
-                                            : Theme.of(context)
-                                                .secondaryHeaderColor
-                                                .withOpacity(.15)),
-                            labelColor: _tabController!.index == 0
-                                ? Theme.of(context).cardColor
-                                : _tabController!.index == 1
-                                    ? Theme.of(context).colorScheme.primary
-                                    : _tabController!.index == 2
-                                        ? Theme.of(context).primaryColor
-                                        : Theme.of(context)
-                                            .secondaryHeaderColor,
+                            // padding: EdgeInsets.symmetric(
+                            //   vertical: Dimensions.paddingSizeExtraSmall,
+                            //   horizontal: _tabController!.index == 0 ||
+                            //           _tabController!.index == 3
+                            //       ? Dimensions.paddingSizeSmall
+                            //       : 0,
+                            // ),
+                            // indicator: BoxDecoration(
+                            // borderRadius: BorderRadius.circular(50),
+                            // color: _tabController!.index == 0
+                            //     ? Theme.of(context).primaryColor
+                            //     : _tabController!.index == 1
+                            //         ? Theme.of(context)
+                            //             .colorScheme
+                            //             .primary
+                            //             .withOpacity(.15)
+                            //         : _tabController!.index == 2
+                            //             ? Theme.of(context)
+                            //                 .primaryColor
+                            //                 .withOpacity(.15)
+                            //             : Theme.of(context)
+                            //                 .secondaryHeaderColor
+                            //                 .withOpacity(.15)),
+                            // labelColor: _tabController!.index == 0
+                            //     ? Theme.of(context).cardColor
+                            //     : _tabController!.index == 1
+                            //         ? Theme.of(context).colorScheme.primary
+                            //         : _tabController!.index == 2
+                            //             ? Theme.of(context).primaryColor
+                            //             : Theme.of(context)
+                            //                 .secondaryHeaderColor,
                             unselectedLabelColor:
                                 Theme.of(context).textTheme.bodyLarge!.color!,
                             unselectedLabelStyle: robotoRegular.copyWith(

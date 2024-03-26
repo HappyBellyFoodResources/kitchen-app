@@ -168,7 +168,10 @@ class OrderCardWidget extends StatelessWidget {
                                     style: robotoRegular),
                                 const SizedBox(
                                     height: Dimensions.paddingSizeDefault),
-                                Text('${order.orderStatus}'.tr,
+                                Text(
+                                    '${order.orderStatus}'
+                                        .replaceAll("_", " ")
+                                        .capitalize!,
                                     style: robotoMedium.copyWith(
                                         color: order.orderStatus == 'confirmed'
                                             ? Theme.of(context)
