@@ -173,8 +173,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                             const CustomDivider(),
                             const SizedBox(
                                 height: Dimensions.paddingSizeDefault),
-                            CalculateAmountWidget(
-                                orderController: orderDetailsController),
+                            // CalculateAmountWidget(
+                            //     orderController: orderDetailsController),
                           ],
                         );
                 }),

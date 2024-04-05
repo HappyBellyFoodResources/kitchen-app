@@ -99,21 +99,19 @@ class OrderedProductList extends StatelessWidget {
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis)),
                               Text(
-                                  orderController
-                                      .orderDetails.details[index].quantity
-                                      .toString(),
+                                  "x${orderController.orderDetails.details[index].quantity.toString()}",
                                   style: robotoRegular.copyWith()),
                               const SizedBox(
                                   width: Dimensions.paddingSizeExtraLarge),
-                              Text(
-                                PriceConverter.convertPrice(
-                                    context,
-                                    (orderController.orderDetails.details[index]
-                                            .price! *
-                                        orderController.orderDetails
-                                            .details[index].quantity!)),
-                                style: robotoMedium.copyWith(),
-                              ),
+                              //   Text(
+                              //     PriceConverter.convertPrice(
+                              //         context,
+                              //         (orderController.orderDetails.details[index]
+                              //                 .price! *
+                              //             orderController.orderDetails
+                              //                 .details[index].quantity!)),
+                              //     style: robotoMedium.copyWith(),
+                              //   ),
                             ],
                           ),
 
@@ -123,7 +121,7 @@ class OrderedProductList extends StatelessWidget {
                                   style: robotoRegular,
                                 )
                               : const SizedBox(),
-
+                          SizedBox(height: 10),
                           addOns.isNotEmpty
                               ? Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -158,16 +156,17 @@ class OrderedProductList extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: Dimensions.paddingSizeExtraSmall),
-                                  child: Text(
-                                      PriceConverter.convertPrice(
-                                          context,
-                                          orderController.orderDetails
-                                              .details[index].price!),
-                                      style: robotoRegular.copyWith(
-                                          color: Theme.of(context).hintColor))),
+                              // Padding(
+                              //     padding: const EdgeInsets.only(
+                              //         top: Dimensions.paddingSizeExtraSmall),
+                              //     child: Text(
+                              //         PriceConverter.convertPrice(
+                              //             context,
+                              //             orderController.orderDetails
+                              //                 .details[index].price!),
+                              //         style: robotoRegular.copyWith(
+                              //             color: Theme.of(context).hintColor))),
+
                               if (configModel.isVegNonVegActive! &&
                                   orderController.orderDetails.details[index]
                                           .productDetails!.productType !=
