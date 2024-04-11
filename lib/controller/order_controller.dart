@@ -1,21 +1,36 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:pull_to_refresh_plus/pull_to_refresh_plus.dart';
+
 import 'package:happy_belly_kitchen/data/api/api_checker.dart';
 import 'package:happy_belly_kitchen/data/model/response/order_details_model.dart';
 import 'package:happy_belly_kitchen/data/model/response/order_model.dart';
 import 'package:happy_belly_kitchen/data/repository/order_repo.dart';
 import 'package:happy_belly_kitchen/view/base/custom_snackbar.dart';
 import 'package:happy_belly_kitchen/view/screens/home/home_screen.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:pull_to_refresh_plus/pull_to_refresh_plus.dart';
 
 enum OrderStatusTabs { all, confirmed, cooking, done }
+
+class CachedOrderDetailsModel {
+  final int id;
+  final OrderDetailsModel details;
+
+  CachedOrderDetailsModel({required this.id, required this.details});
+}
 
 class OrderController extends GetxController implements GetxService {
   final OrderRepo orderRepo;
   OrderController({required this.orderRepo});
+  TabController? tabController;
 
   List<Orders>? _orderList = [];
   List<Orders>? get orderList => _orderList;
+  set orderList(List<Orders>? value) {
+    _orderList = value;
+    update();
+  }
+
   bool _isLoading = false;
   bool get isLoading => _isLoading;
   set isLoading(bool value) {
@@ -38,6 +53,7 @@ class OrderController extends GetxController implements GetxService {
   String get orderStatus => _orderStatus;
   String _orderNote = '';
   String get orderNote => _orderNote;
+  List<CachedOrderDetailsModel> cachedOrderDetails = [];
 
   OrderDetailsModel _orderDetails = OrderDetailsModel(
       details: [],
@@ -89,6 +105,24 @@ class OrderController extends GetxController implements GetxService {
         }
       }
     });
+  }
+
+  Future<void> fetchOrders(index) async {
+    switch (index) {
+      case 0:
+        await Get.find<OrderController>().getOrderList(1);
+        break;
+      case 1:
+        await Get.find<OrderController>().filterOrder('confirmed', 1);
+        break;
+      case 2:
+        await Get.find<OrderController>().filterOrder('cooking', 1);
+        break;
+      case 3:
+        await Get.find<OrderController>()
+            .filterOrder('ready_for_delivering', 1);
+        break;
+    }
   }
 
   final List<Tab> orderTypeList = <Tab>[
@@ -207,6 +241,8 @@ class OrderController extends GetxController implements GetxService {
       if (apiResponse.body['order']['order_status'] != 'delivered' &&
           apiResponse.body['order']['order_status'] != 'out_for_delivery') {
         _orderDetails = OrderDetailsModel.fromJson(apiResponse.body);
+        cachedOrderDetails
+            .add(CachedOrderDetailsModel(id: orderID, details: _orderDetails));
       }
     } else {
       ApiChecker.checkApi(apiResponse);
@@ -218,20 +254,21 @@ class OrderController extends GetxController implements GetxService {
 
   Future<void> orderStatusUpdate(int orderId, String orderStatus) async {
     _isLoading = true;
+    update();
     Response response = await orderRepo.updateOrderStatus(orderId, orderStatus);
     if (response.statusCode == 200) {
       if (orderStatus == "cooking") {
         setIndex(2);
-        filterOrder('cooking', 1);
       } else {
         setIndex(3);
-        filterOrder('ready_for_delivering', 1);
       }
+
+      fetchOrders(tabController?.index);
       showCustomSnackBar("order_status_updated_successfully".tr,
           isError: false);
-      if (Get.width < 640) {
-        Get.to(const HomeScreen(fromFilter: true));
-      }
+      // if (Get.width < 640) {
+      //   Get.to(const HomeScreen(fromFilter: true));
+      // }
     } else {
       ApiChecker.checkApi(response);
     }

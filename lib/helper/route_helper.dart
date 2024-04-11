@@ -1,5 +1,6 @@
 import 'package:happy_belly_kitchen/view/screens/auth/login_screen.dart';
 import 'package:happy_belly_kitchen/view/screens/home/home_screen.dart';
+import 'package:happy_belly_kitchen/view/screens/home/home_screen_new.dart';
 import 'package:happy_belly_kitchen/view/screens/splash/splash_screen.dart';
 import 'package:get/get.dart';
 
@@ -17,7 +18,7 @@ class RouteHelper {
   static List<GetPage> routes = [
     GetPage(name: initial, page: () => const SplashScreen()),
     GetPage(name: splash, page: () => const SplashScreen()),
-    GetPage(name: home, page: () => const HomeScreen()),
+    GetPage(name: home, page: () => const HomeScreenNew()),
     GetPage(name: login, page: () => const LoginScreen()),
   ];
 }

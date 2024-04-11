@@ -3,12 +3,7 @@ class OrderModel {
   int? _lastPage;
   int? _total;
 
-  OrderModel(
-      {
-        List<Orders>? data,
-        int? from,
-        int? total}) {
-
+  OrderModel({List<Orders>? data, int? from, int? total}) {
     if (data != null) {
       _data = data;
     }
@@ -22,14 +17,11 @@ class OrderModel {
     }
   }
 
-
   List<Orders>? get data => _data;
   int? get lastPage => _lastPage;
   int? get total => _total;
 
-
   OrderModel.fromJson(Map<String, dynamic> json) {
-
     if (json['data'] != null) {
       _data = <Orders>[];
       json['data'].forEach((v) {
@@ -78,35 +70,36 @@ class Orders {
   int? _tableNumber;
   int? _numberOfPeople;
   Table? _table;
+  bool? _addCutlery;
 
   Orders(
       {int? id,
-        int? userId,
-        double? orderAmount,
-        int? couponDiscountAmount,
-        String? paymentStatus,
-        String? orderStatus,
-        double? totalTaxAmount,
-        String? paymentMethod,
-        int? deliveryAddressId,
-        String? createdAt,
-        String? updatedAt,
-        int? checked,
-        int? deliveryManId,
-        double? deliveryCharge,
-        String orderNote ='',
-        String? couponCode,
-        String? orderType,
-        int? branchId,
-        String? deliveryDate,
-        String? deliveryTime,
-        String? extraDiscount,
-        DeliveryAddress? deliveryAddress,
-        int? preparationTime,
-        int? tableNumber,
-        int? numberOfPeople,
-        Table? table
-      }) {
+      int? userId,
+      double? orderAmount,
+      int? couponDiscountAmount,
+      String? paymentStatus,
+      String? orderStatus,
+      double? totalTaxAmount,
+      String? paymentMethod,
+      int? deliveryAddressId,
+      String? createdAt,
+      String? updatedAt,
+      int? checked,
+      int? deliveryManId,
+      double? deliveryCharge,
+      String orderNote = '',
+      String? couponCode,
+      String? orderType,
+      int? branchId,
+      String? deliveryDate,
+      String? deliveryTime,
+      String? extraDiscount,
+      DeliveryAddress? deliveryAddress,
+      int? preparationTime,
+      int? tableNumber,
+      int? numberOfPeople,
+      bool? addCutlery,
+      Table? table}) {
     if (id != null) {
       _id = id;
     }
@@ -185,12 +178,15 @@ class Orders {
     if (table != null) {
       _table = table;
     }
+    if (addCutlery != null) {
+      _addCutlery = addCutlery;
+    }
   }
 
   int? get id => _id;
   int? get userId => _userId;
   double? get orderAmount => _orderAmount;
-
+  bool? get addCutlery => _addCutlery;
   String? get paymentStatus => _paymentStatus;
   String? get orderStatus => _orderStatus;
   double? get totalTaxAmount => _totalTaxAmount;
@@ -217,6 +213,7 @@ class Orders {
   Orders.fromJson(Map<String, dynamic> json) {
     _id = json['id'];
     _userId = json['user_id'];
+    _addCutlery = json['add_cutlery'];
     _orderAmount = json['order_amount'].toDouble();
     _couponDiscountAmount = json['coupon_discount_amount'];
     _paymentStatus = json['payment_status'];
@@ -229,9 +226,9 @@ class Orders {
     _checked = int.tryParse('${json['checked']}');
     _deliveryManId = json['delivery_man_id'];
     _deliveryCharge = json['delivery_charge'].toDouble();
-    if(json['order_note'] != null){
+    if (json['order_note'] != null) {
       _orderNote = json['order_note'];
-    }else{
+    } else {
       _orderNote = '';
     }
 
@@ -300,15 +297,15 @@ class DeliveryAddress {
 
   DeliveryAddress(
       {int? id,
-        String? addressType,
-        String? contactPersonNumber,
-        String? address,
-        String? latitude,
-        String? longitude,
-        String? createdAt,
-        String? updatedAt,
-        int? userId,
-        String? contactPersonName}) {
+      String? addressType,
+      String? contactPersonNumber,
+      String? address,
+      String? latitude,
+      String? longitude,
+      String? createdAt,
+      String? updatedAt,
+      int? userId,
+      String? contactPersonName}) {
     if (id != null) {
       _id = id;
     }
@@ -352,7 +349,6 @@ class DeliveryAddress {
   int? get userId => _userId;
   String? get contactPersonName => _contactPersonName;
 
-
   DeliveryAddress.fromJson(Map<String, dynamic> json) {
     _id = json['id'];
     _addressType = json['address_type'];
@@ -382,16 +378,12 @@ class DeliveryAddress {
   }
 }
 
-
 class Table {
   int? _number;
-  Table(
-      {int? number}) {
-
+  Table({int? number}) {
     if (number != null) {
       _number = number;
     }
-
   }
 
   int? get number => _number;
