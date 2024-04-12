@@ -26,7 +26,7 @@ class _HomeScreenNewState extends State<HomeScreenNew>
   @override
   void initState() {
     _tabController = TabController(
-      length: 4,
+      length: 3,
       vsync: this,
     );
     Get.find<OrderController>().tabController = _tabController;
@@ -158,9 +158,6 @@ class _HomeScreenNewState extends State<HomeScreenNew>
                       ),
                       Tab(
                         text: "Cooked",
-                      ),
-                      Tab(
-                        text: "Done",
                       ),
                     ]),
               )),
@@ -459,7 +456,7 @@ class _OrderItemState extends State<OrderItem> {
                           Expanded(
                               child: Scrollbar(
                             trackVisibility: true,
-                            thumbVisibility: true,
+                            // thumbVisibility: true,
                             child: ListView.builder(
                               itemCount:
                                   asyncSnapshot.data?.details.length ?? 0,
@@ -520,7 +517,8 @@ class _OrderItemState extends State<OrderItem> {
                           child: Row(
                             children: [
                               if (widget.item.orderStatus !=
-                                  "ready_for_delivering")
+                                      "ready_for_delivering" &&
+                                  widget.item.orderStatus != "pending")
                                 Expanded(
                                   child: FilledButton(
                                       onPressed: Get.find<OrderController>()
@@ -557,9 +555,9 @@ class _OrderItemState extends State<OrderItem> {
                                                 switch (
                                                     widget.item.orderStatus) {
                                                   case "cooking":
-                                                    return "Done Cooking";
+                                                    return "Finish";
                                                   default:
-                                                    return "Start Cooking";
+                                                    return "Start";
                                                 }
                                               }(),
                                               style: const TextStyle(
