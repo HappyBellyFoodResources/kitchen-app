@@ -71,6 +71,7 @@ class Orders {
   int? _numberOfPeople;
   Table? _table;
   bool? _addCutlery;
+  int? _screenId;
 
   Orders(
       {int? id,
@@ -99,6 +100,7 @@ class Orders {
       int? tableNumber,
       int? numberOfPeople,
       bool? addCutlery,
+      int? screenId,
       Table? table}) {
     if (id != null) {
       _id = id;
@@ -181,6 +183,10 @@ class Orders {
     if (addCutlery != null) {
       _addCutlery = addCutlery;
     }
+
+    if (screenId != null) {
+      _screenId = screenId;
+    }
   }
 
   int? get id => _id;
@@ -209,11 +215,12 @@ class Orders {
   int? get tableNumber => _tableNumber;
   int? get numberOfPeople => _numberOfPeople;
   Table? get table => _table;
+  int? get screenId => _screenId;
 
   Orders.fromJson(Map<String, dynamic> json) {
     _id = json['id'];
     _userId = json['user_id'];
-    _addCutlery = json['add_cutlery'];
+    _addCutlery = json['remove_cutlery'] == 0 ? true : false;
     _orderAmount = json['order_amount'].toDouble();
     _couponDiscountAmount = json['coupon_discount_amount'];
     _paymentStatus = json['payment_status'];
@@ -238,6 +245,7 @@ class Orders {
     _deliveryDate = json['delivery_date'];
     _deliveryTime = json['delivery_time'];
     _extraDiscount = json['extra_discount'];
+    _screenId = json['screen_id'];
     _deliveryAddress = json['delivery_address'] != null
         ? DeliveryAddress.fromJson(json['delivery_address'])
         : null;
@@ -270,6 +278,7 @@ class Orders {
     data['delivery_date'] = _deliveryDate;
     data['delivery_time'] = _deliveryTime;
     data['extra_discount'] = _extraDiscount;
+    data['screen_id'] = _screenId;
     if (_deliveryAddress != null) {
       data['delivery_address'] = _deliveryAddress!.toJson();
     }

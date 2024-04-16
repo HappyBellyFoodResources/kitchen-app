@@ -15,7 +15,7 @@ class AuthController extends GetxController implements GetxService {
   XFile get pickedFile => _pickedFile;
   bool _isLoading = false;
   bool get isLoading => _isLoading;
-  bool _isActiveRememberMe = false;
+  bool _isActiveRememberMe = true;
   bool get isActiveRememberMe => _isActiveRememberMe;
   User _profileModel = User();
   User get profileModel => _profileModel;

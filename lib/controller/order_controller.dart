@@ -138,6 +138,7 @@ class OrderController extends GetxController implements GetxService {
 
     if (refetch == false) {
       _isLoading = true;
+      update();
     }
 
     Response response = await orderRepo.getOrderList(offset);
