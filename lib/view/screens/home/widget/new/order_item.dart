@@ -218,11 +218,19 @@ class _OrderItemState extends State<OrderItem> {
 
                                 List<AddOns> addonsData =
                                     order?.productDetails?.addOns ?? [];
-                                for (var addOn in addonsData) {
-                                  if (order!.addOnIds!.contains(addOn.id)) {
-                                    addOns.add(addOn);
-                                  }
+
+                                for (int i = 0;
+                                    i < order!.addOnIds!.length;
+                                    i++) {
+                                  var thisAddOn = addonsData
+                                      .where((e) => e.id == order.addOnIds![i])
+                                      .first;
+
+                                  addOns.add(thisAddOn);
+                                  debugPrint(
+                                      'Name: ${thisAddOn.name}, ID: ${order.addOnIds![i]}, QYT: ${order.addOnQtys![i]}');
                                 }
+
                                 return OrderList(
                                   order: order!,
                                   addOns: addOns,

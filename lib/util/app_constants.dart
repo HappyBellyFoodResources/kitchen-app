@@ -6,8 +6,8 @@ class AppConstants {
   static const double appVersion = 1.4;
 
   // demo
-  static const String baseUrl = 'https://control.eathappybelly.com';
-  // static const String baseUrl = 'https://happybelly.techbridge.city';
+  // static const String baseUrl = 'https://control.eathappybelly.com';
+  static const String baseUrl = 'https://hbstaging.techbridge.city';
   static const String configUri = '/api/v1/config';
   static const String loginUri = '/api/v1/auth/kitchen/login';
   static const String profileUri = '/api/v1/kitchen/profile';

@@ -41,6 +41,7 @@ class OrderList extends StatelessWidget {
           ListView.builder(
               shrinkWrap: true,
               itemCount: addOns.length,
+              // reverse: true,
               itemBuilder: (context, addOnIndex) {
                 var addOn = addOns[addOnIndex];
                 return Column(
