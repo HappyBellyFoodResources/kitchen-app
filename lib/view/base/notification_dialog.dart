@@ -31,8 +31,8 @@ class _NewRequestDialogState extends State<NotificationDialog> {
   }
 
   void _startAlarm() async {
-    AudioCache audio = AudioCache();
-    audio.play('notification.wav');
+    AudioPlayer audio = AudioPlayer();
+    audio.play(AssetSource('assets/notification.wav'));
   }
 
   @override

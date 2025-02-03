@@ -6,7 +6,6 @@ import 'package:happy_belly_kitchen/view/base/custom_divider.dart';
 import 'package:happy_belly_kitchen/view/base/custom_loader.dart';
 import 'package:happy_belly_kitchen/view/base/sliver_delegate.dart';
 import 'package:happy_belly_kitchen/view/screens/home/widget/status_change_custom_button.dart';
-import 'package:happy_belly_kitchen/view/screens/order/widget/calculate_amount_widget.dart';
 import 'package:happy_belly_kitchen/view/screens/order/widget/ordered_product_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';

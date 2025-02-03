@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:happy_belly_kitchen/data/model/response/language_model.dart';
 import 'package:happy_belly_kitchen/util/images.dart';
 
@@ -6,7 +7,9 @@ class AppConstants {
   static const double appVersion = 1.4;
 
   // demo
-  static const String baseUrl = 'https://control.eathappybelly.com';
+  static String baseUrl = kDebugMode
+      ? "https://staging.eathappybelly.com"
+      : "https://control.eathappybelly.com";
   static const String configUri = '/api/v1/config';
   static const String loginUri = '/api/v1/auth/kitchen/login';
   static const String profileUri = '/api/v1/kitchen/profile';

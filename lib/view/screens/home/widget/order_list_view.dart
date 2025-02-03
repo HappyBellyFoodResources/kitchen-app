@@ -4,7 +4,6 @@ import 'package:happy_belly_kitchen/data/model/response/order_model.dart';
 import 'package:happy_belly_kitchen/helper/responsive_helper.dart';
 import 'package:happy_belly_kitchen/util/dimensions.dart';
 import 'package:happy_belly_kitchen/view/base/no_data_screen.dart';
-import 'package:happy_belly_kitchen/view/base/order_shimmer.dart';
 import 'package:happy_belly_kitchen/view/screens/home/widget/order_card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -32,7 +31,7 @@ class _OrderListViewState extends State<OrderListView> {
   }
 
   refresh() async {
-    switch (widget.tabController!.index) {
+    switch (widget.tabController.index) {
       case 0:
         await Get.find<OrderController>().getOrderList(1);
         break;

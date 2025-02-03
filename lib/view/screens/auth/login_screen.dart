@@ -10,7 +10,6 @@ import 'package:happy_belly_kitchen/view/base/custom_button.dart';
 import 'package:happy_belly_kitchen/view/base/custom_shape.dart';
 import 'package:happy_belly_kitchen/view/base/custom_snackbar.dart';
 import 'package:happy_belly_kitchen/view/base/custom_text_field.dart';
-import 'package:happy_belly_kitchen/view/screens/auth/widget/country_code_picker_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

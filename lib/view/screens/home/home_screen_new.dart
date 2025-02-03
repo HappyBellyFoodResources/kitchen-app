@@ -1,22 +1,13 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-
 import 'package:happy_belly_kitchen/controller/order_controller.dart';
-import 'package:happy_belly_kitchen/data/model/response/order_details_model.dart';
-import 'package:happy_belly_kitchen/data/model/response/order_model.dart';
 import 'package:happy_belly_kitchen/view/base/animated_dialog.dart';
 import 'package:happy_belly_kitchen/view/base/logout_dialog.dart';
 import 'package:happy_belly_kitchen/view/screens/auth/login_screen.dart';
 import 'package:pull_to_refresh_plus/pull_to_refresh_plus.dart';
-
-import 'widget/new/item_list.dart';
-import 'widget/new/order_list.dart';
 import 'widget/new/order_list_view.dart';
-import 'widget/new/order_summary_item.dart';
 
 class HomeScreenNew extends StatefulWidget {
   const HomeScreenNew({super.key});
@@ -94,7 +85,7 @@ class _HomeScreenNewState extends State<HomeScreenNew>
                                 Navigator.pushAndRemoveUntil(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (_) => LoginScreen()),
+                                        builder: (_) => const LoginScreen()),
                                     (route) => false);
                               },
                               onTapTrueText: 'yes'.tr,
@@ -111,16 +102,16 @@ class _HomeScreenNewState extends State<HomeScreenNew>
                 },
                 itemBuilder: (_) => [
                   const PopupMenuItem(
-                    child: Text('Screen 1'),
                     value: 1,
+                    child: Text('Screen 1'),
                   ),
                   const PopupMenuItem(
-                    child: Text('Screen 2'),
                     value: 2,
+                    child: Text('Screen 2'),
                   ),
                   const PopupMenuItem(
-                    child: Text('All Screen'),
                     value: 0,
+                    child: Text('All Screen'),
                   ),
                   const PopupMenuItem(
                     value: 'logout',
@@ -182,11 +173,11 @@ class _HomeScreenNewState extends State<HomeScreenNew>
                               });
                             }
                           },
-                          icon: Icon(
+                          icon: const Icon(
                             Icons.clear_rounded,
                             color: Colors.black,
                           ))
-                      : Icon(Icons.search),
+                      : const Icon(Icons.search),
                   hintStyle: const TextStyle(
                     color: Color(0xFFBBB7B6),
                     fontSize: 14,
@@ -209,7 +200,7 @@ class _HomeScreenNewState extends State<HomeScreenNew>
                             indicatorPadding: EdgeInsets.zero,
                             padding: const EdgeInsets.only(right: 15),
                             dividerHeight: 0,
-                            overlayColor: const MaterialStatePropertyAll(
+                            overlayColor: const WidgetStatePropertyAll(
                                 Colors.transparent),
                             tabAlignment: TabAlignment.start,
                             isScrollable: true,
@@ -233,8 +224,8 @@ class _HomeScreenNewState extends State<HomeScreenNew>
                         child: Text(
                             active_screen_index == 0
                                 ? "All Screens"
-                                : "Screen ${active_screen_index}",
-                            style: TextStyle(
+                                : "Screen $active_screen_index",
+                            style: const TextStyle(
                                 fontWeight: FontWeight.w600, fontSize: 18)),
                       ),
                     ],
@@ -252,11 +243,11 @@ class _HomeScreenNewState extends State<HomeScreenNew>
               padding: const EdgeInsets.all(15),
               child: Container(
                 constraints: screen.height > 800 && screen.width > 800
-                    ? BoxConstraints(maxHeight: 750)
+                    ? const BoxConstraints(maxHeight: 750)
                     : null,
                 child: TabBarView(
                     controller: _tabController,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     children: [
                       OrderListView(
                         activeTab: _tabController?.index ?? 0,

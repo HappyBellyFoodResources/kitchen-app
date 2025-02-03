@@ -1,4 +1,3 @@
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -108,7 +107,7 @@ class _OrderItemState extends State<OrderItem> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              'Order ID: ${widget.item?.id}',
+                              'Order ID: ${widget.item.id}',
                               style:
                                   const TextStyle(fontWeight: FontWeight.bold),
                             ),
@@ -132,9 +131,27 @@ class _OrderItemState extends State<OrderItem> {
                             )
                           ],
                         ),
-                        Text(
-                          widget.item.deliveryAddress?.contactPersonName ?? '',
-                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        Row(
+                          children: [
+                            Text(
+                              widget.item.deliveryAddress?.contactPersonName ??
+                                  '',
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            widget.item.isFirstOrder == '1'
+                                ? Container(
+                                    margin: const EdgeInsets.only(left: 5),
+                                    padding: const EdgeInsets.all(2),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(4),
+                                        color: Colors.red),
+                                    child: const Text('New User',
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 12)),
+                                  )
+                                : Container()
+                          ],
                         ),
                       ],
                     ),
@@ -149,7 +166,7 @@ class _OrderItemState extends State<OrderItem> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              if (widget.item.orderNote != "")
+                              if (widget.item.kitchenNote != "")
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -165,15 +182,29 @@ class _OrderItemState extends State<OrderItem> {
                                       height: 3,
                                     ),
                                     const SizedBox(height: 10),
+                                    // Container(
+                                    //   width: double.infinity,
+                                    //   padding: const EdgeInsets.symmetric(
+                                    //       horizontal: 15, vertical: 10),
+                                    //   decoration: BoxDecoration(
+                                    //       color: const Color(0xFCECECEB),
+                                    //       borderRadius:
+                                    //           BorderRadius.circular(15)),
+                                    //   child: Text(widget.item.orderNote ?? ''),
+                                    // ),
                                     Container(
                                       width: double.infinity,
+                                      height:
+                                          90, // Set a fixed height for the container
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 15, vertical: 10),
                                       decoration: BoxDecoration(
-                                          color: const Color(0xFCECECEB),
-                                          borderRadius:
-                                              BorderRadius.circular(15)),
-                                      child: Text(widget.item.orderNote ?? ''),
+                                        color: const Color(0xFCECECEB),
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                      child: SingleChildScrollView(
+                                        child: Text(widget.item.kitchenNote),
+                                      ),
                                     ),
                                     const SizedBox(height: 20),
                                   ],
@@ -222,17 +253,23 @@ class _OrderItemState extends State<OrderItem> {
                                 for (int i = 0;
                                     i < order!.addOnIds!.length;
                                     i++) {
-                                  var thisAddOn = addonsData
-                                      .where((e) => e.id == order.addOnIds![i])
-                                      .first;
+                                  var matchingAddons = addonsData
+                                      .where((e) => e.id == order.addOnIds![i]);
 
-                                  addOns.add(thisAddOn);
-                                  debugPrint(
-                                      'Name: ${thisAddOn.name}, ID: ${order.addOnIds![i]}, QYT: ${order.addOnQtys![i]}');
+                                  if (matchingAddons.isNotEmpty) {
+                                    var thisAddOn = matchingAddons.first;
+                                    addOns.add(thisAddOn);
+                                    debugPrint(
+                                      'Name: ${thisAddOn.name}, ID: ${order.addOnIds![i]}, QTY: ${order.addOnQtys![i]}',
+                                    );
+                                  } else {
+                                    debugPrint(
+                                        'No addon found for ID: ${order.addOnIds![i]}');
+                                  }
                                 }
 
                                 return OrderList(
-                                  order: order!,
+                                  order: order,
                                   addOns: addOns,
                                 );
                               },
@@ -307,7 +344,7 @@ class _OrderItemState extends State<OrderItem> {
                                               vertical: 13)),
                                       child: Get.find<OrderController>()
                                               .isLoading
-                                          ? CupertinoActivityIndicator()
+                                          ? const CupertinoActivityIndicator()
                                           : Text(
                                               () {
                                                 switch (

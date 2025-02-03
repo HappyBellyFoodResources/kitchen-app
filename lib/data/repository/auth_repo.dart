@@ -60,8 +60,9 @@ class AuthRepo {
       deviceToken = await _saveDeviceToken();
     }
     if (!GetPlatform.isWeb) {
-      FirebaseMessaging.instance
-          .subscribeToTopic('${AppConstants.topic}-$branchId');
+      FirebaseMessaging.instance.subscribeToTopic(AppConstants.topic);
+      debugPrint(
+          'Topic subscribed succesfully. Topic is:${AppConstants.topic}');
     }
 
     return await apiClient.postData(
@@ -72,9 +73,7 @@ class AuthRepo {
     String? deviceToken = '@';
     deviceToken = await FirebaseMessaging.instance.getToken();
 
-    if (deviceToken != null) {
-      debugPrint('--------Device Token---------- $deviceToken');
-    }
+    debugPrint('--------Device Token---------- $deviceToken');
     return deviceToken;
   }
 

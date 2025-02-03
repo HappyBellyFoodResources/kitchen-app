@@ -71,6 +71,8 @@ class Orders {
   int? _numberOfPeople;
   Table? _table;
   bool? _addCutlery;
+  String _kitchenNote = '';
+  String? _isFirstOrder;
   int? _screenId;
 
   Orders(
@@ -100,6 +102,8 @@ class Orders {
       int? tableNumber,
       int? numberOfPeople,
       bool? addCutlery,
+      String kitchenNote = '',
+      String? isFirstOrder,
       int? screenId,
       Table? table}) {
     if (id != null) {
@@ -146,6 +150,7 @@ class Orders {
       _deliveryCharge = deliveryCharge;
     }
     _orderNote = orderNote;
+    _kitchenNote = kitchenNote;
     if (couponCode != null) {
       _couponCode = couponCode;
     }
@@ -154,6 +159,9 @@ class Orders {
     }
     if (branchId != null) {
       _branchId = branchId;
+    }
+    if (isFirstOrder != null) {
+      _isFirstOrder = isFirstOrder;
     }
 
     if (deliveryDate != null) {
@@ -204,6 +212,7 @@ class Orders {
   int? get deliveryManId => _deliveryManId;
   double? get deliveryCharge => _deliveryCharge;
   String get orderNote => _orderNote;
+  String get kitchenNote => _kitchenNote;
   String? get couponCode => _couponCode;
   String? get orderType => _orderType;
   int? get branchId => _branchId;
@@ -214,6 +223,7 @@ class Orders {
   int? get preparationTime => _preparationTime;
   int? get tableNumber => _tableNumber;
   int? get numberOfPeople => _numberOfPeople;
+  String? get isFirstOrder => _isFirstOrder;
   Table? get table => _table;
   int? get screenId => _screenId;
 
@@ -233,12 +243,17 @@ class Orders {
     _checked = int.tryParse('${json['checked']}');
     _deliveryManId = json['delivery_man_id'];
     _deliveryCharge = json['delivery_charge'].toDouble();
+    _isFirstOrder = json['is_first_order'];
     if (json['order_note'] != null) {
       _orderNote = json['order_note'];
     } else {
       _orderNote = '';
     }
-
+    if (json['kitchen_note'] != null) {
+      _kitchenNote = json['kitchen_note'];
+    } else {
+      _kitchenNote = '';
+    }
     _couponCode = json['coupon_code'];
     _orderType = json['order_type'];
     _branchId = int.tryParse('${json['branch_id']}');
@@ -272,6 +287,7 @@ class Orders {
     data['delivery_man_id'] = _deliveryManId;
     data['delivery_charge'] = _deliveryCharge;
     data['order_note'] = _orderNote;
+    data['kitchen_note'] = _kitchenNote;
     data['coupon_code'] = _couponCode;
     data['order_type'] = _orderType;
     data['branch_id'] = _branchId;
@@ -285,6 +301,7 @@ class Orders {
     data['preparation_time'] = _preparationTime;
     data['table_id'] = _tableNumber;
     data['number_of_people'] = _numberOfPeople;
+    data['is_first_order'] = _isFirstOrder;
     if (_table != null) {
       data['table'] = _table!.toJson();
     }

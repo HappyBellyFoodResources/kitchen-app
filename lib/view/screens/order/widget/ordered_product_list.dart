@@ -2,7 +2,6 @@ import 'package:happy_belly_kitchen/controller/order_controller.dart';
 import 'package:happy_belly_kitchen/controller/splash_controller.dart';
 import 'package:happy_belly_kitchen/data/model/response/config_model.dart';
 import 'package:happy_belly_kitchen/data/model/response/order_details_model.dart';
-import 'package:happy_belly_kitchen/helper/price_converter.dart';
 import 'package:happy_belly_kitchen/helper/responsive_helper.dart';
 import 'package:happy_belly_kitchen/util/dimensions.dart';
 import 'package:happy_belly_kitchen/util/styles.dart';
@@ -121,7 +120,7 @@ class OrderedProductList extends StatelessWidget {
                                   style: robotoRegular,
                                 )
                               : const SizedBox(),
-                          SizedBox(height: 10),
+                          const SizedBox(height: 10),
                           addOns.isNotEmpty
                               ? Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,

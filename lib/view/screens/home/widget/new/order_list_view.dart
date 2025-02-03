@@ -1,14 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
-import 'package:carousel_slider/carousel_controller.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:happy_belly_kitchen/controller/demo_data_controller.dart';
 import 'package:happy_belly_kitchen/controller/order_controller.dart';
 import 'package:happy_belly_kitchen/data/model/response/order_model.dart';
 import 'package:happy_belly_kitchen/util/images.dart';
-import 'package:happy_belly_kitchen/view/screens/home/home_screen_new.dart';
 import 'package:happy_belly_kitchen/view/screens/home/widget/new/order_item.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -27,7 +25,9 @@ class OrderListView extends StatefulWidget {
 }
 
 class _OrderListViewState extends State<OrderListView> {
-  CarouselController _carouselController = CarouselController();
+  final CarouselSliderController _carouselSliderController =
+      CarouselSliderController();
+  final CarouselController _carouselController = CarouselController();
 
   @override
   void initState() {
@@ -54,7 +54,7 @@ class _OrderListViewState extends State<OrderListView> {
         }
       }
 
-      return orderList!.isEmpty
+      return orderList == null || orderList.isEmpty
           ? Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -63,8 +63,8 @@ class _OrderListViewState extends State<OrderListView> {
                     Images.emptyBox,
                     width: 50,
                   ),
-                  SizedBox(height: 10),
-                  Text("Oops! nothing is here",
+                  const SizedBox(height: 10),
+                  const Text("Oops! nothing is here",
                       style:
                           TextStyle(fontWeight: FontWeight.w600, fontSize: 18)),
                 ])
@@ -72,7 +72,7 @@ class _OrderListViewState extends State<OrderListView> {
               enabled: orderController.isLoading,
               ignoreContainers: false,
               child: CarouselSlider.builder(
-                carouselController: _carouselController,
+                carouselController: _carouselSliderController,
                 options: CarouselOptions(
                   pageSnapping: screenWidth > 600 ? false : true,
                   scrollDirection: Axis.horizontal,
@@ -100,17 +100,17 @@ class _OrderListViewState extends State<OrderListView> {
                   })(),
                   enableInfiniteScroll: false,
                 ),
-                itemCount: orderList?.length ?? 0,
+                itemCount: orderList.length ?? 0,
                 itemBuilder:
                     (BuildContext context, int itemIndex, int pageViewIndex) {
                   var item = orderList![itemIndex];
                   return AnimatedSwitcher(
-                    duration: Duration(milliseconds: 500),
+                    duration: const Duration(milliseconds: 500),
                     transitionBuilder:
                         (Widget child, Animation<double> animation) {
                       return SlideTransition(
                         position: Tween<Offset>(
-                          begin: Offset(0.0, -1.0),
+                          begin: const Offset(0.0, -1.0),
                           end: Offset.zero,
                         ).animate(animation),
                         child: child,
