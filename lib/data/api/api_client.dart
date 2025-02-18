@@ -180,6 +180,37 @@ class ApiClient extends GetxService {
     }
     return response0;
   }
+
+  // Method to set General Surge
+  Future<Response> setGeneralSurge(int preparationTime) async {
+    final url = '${appBaseUrl!}${AppConstants.setGeneralSurge}';
+    
+    try {
+      final response = await postData(url, {
+        'preparation_time': preparationTime,
+      });
+
+      return response;
+    } catch (e) {
+      return const Response(statusCode: 1, statusText: 'Error setting surge');
+    }
+  }
+
+  // Method to set Individual Surge
+  Future<Response> setIndividualSurge(String orderId, int extraTime) async {
+    final url = '${appBaseUrl!}${AppConstants.setIndividualSurge}';
+    
+    try {
+      final response = await postData(url, {
+        'order_id': orderId,
+        'extra_time': extraTime,
+      });
+
+      return response;
+    } catch (e) {
+      return const Response(statusCode: 1, statusText: 'Error setting individual surge');
+    }
+  }
 }
 
 class MultipartBody {

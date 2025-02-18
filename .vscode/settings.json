@@ -1,4 +1,5 @@
 {
-    "java.configuration.updateBuildConfiguration": "interactive",
-    "yaml.schemaStore.enable": false
+  "java.configuration.updateBuildConfiguration": "interactive",
+  "yaml.schemaStore.enable": false,
+  "dart.flutterSdkPath": ".fvm/versions/3.24.3"
 }

@@ -17,9 +17,10 @@ class AppConstants {
   static const String orderDetails = '/api/v1/kitchen/order/details';
   static const String orderStatusUpdate = '/api/v1/kitchen/order/status';
   static const String searchOrder = '/api/v1/kitchen/order/search?search=';
-  static const String filterOrder =
-      '/api/v1/kitchen/order/filter?order_status=';
+  static const String filterOrder = '/api/v1/kitchen/order/filter?order_status=';
   static const String fcmTokenUri = '/api/v1/kitchen/update-fcm-token';
+  static const String setGeneralSurge = '/api/v1/set_general_surge';
+  static const String setIndividualSurge = '/api/v1/set-individual-surge';
 
   // Shared Key
   static const String theme = 'theme';
