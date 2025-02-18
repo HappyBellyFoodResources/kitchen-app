@@ -53,7 +53,6 @@ class OrderCardWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  // width: MediaQuery.of(context).size.width/2,
                   decoration: BoxDecoration(
                     color: Theme.of(context).cardColor,
                     borderRadius: const BorderRadius.only(
@@ -81,7 +80,6 @@ class OrderCardWidget extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  // width: MediaQuery.of(context).size.width/2,
                   padding: const EdgeInsets.fromLTRB(
                     Dimensions.paddingSizeExtraSmall,
                     0,
@@ -120,73 +118,23 @@ class OrderCardWidget extends StatelessWidget {
                               ),
                             ],
                           )),
-                      Container(
-                          width: MediaQuery.of(context).size.width / 2,
-                          decoration: BoxDecoration(
-                              color: order.orderStatus == 'confirmed'
-                                  ? Theme.of(context)
-                                      .colorScheme
-                                      .primary
-                                      .withOpacity(.15)
-                                  : order.orderStatus == 'cooking'
-                                      ? Theme.of(context)
-                                          .primaryColor
-                                          .withOpacity(.15)
-                                      : Theme.of(context)
-                                          .secondaryHeaderColor
-                                          .withOpacity(.15),
-                              borderRadius: const BorderRadius.only(
-                                  bottomLeft: Radius.circular(
-                                      Dimensions.paddingSizeSmall),
-                                  bottomRight: Radius.circular(
-                                      Dimensions.paddingSizeSmall))),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: Dimensions.paddingSizeExtraSmall),
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: Dimensions.paddingSizeExtraSmall),
-                                  child: Text('order_time'.tr,
-                                      style: robotoMedium.copyWith(
-                                          fontSize:
-                                              Dimensions.fontSizeDefault)),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical:
-                                          Dimensions.paddingSizeExtraSmall),
-                                  child: Text(
-                                      DateConverter.isoStringToLocalDateOnly(
-                                          order.createdAt!),
-                                      style: robotoRegular),
-                                ),
-                                Text(
-                                    DateConverter.isoStringToLocalTimeOnly(
-                                        order.createdAt!),
-                                    style: robotoRegular),
-                                const SizedBox(
-                                    height: Dimensions.paddingSizeDefault),
-                                Text(
-                                    '${order.orderStatus}'
-                                        .replaceAll("_", " ")
-                                        .capitalize!,
-                                    style: robotoMedium.copyWith(
-                                        color: order.orderStatus == 'confirmed'
-                                            ? Theme.of(context)
-                                                .colorScheme
-                                                .primary
-                                            : order.orderStatus == 'cooking'
-                                                ? Theme.of(context).primaryColor
-                                                : Theme.of(context)
-                                                    .secondaryHeaderColor,
-                                        fontSize: Dimensions.fontSizeDefault)),
-                                const SizedBox(
-                                    height: Dimensions.paddingSizeExtraSmall),
-                              ],
-                            ),
-                          )),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              orderController.setIndividualSurge(order.id!, 10);
+                            },
+                            child: Text('Set Individual Surge'),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              orderController.startCooking(order.id!);
+                            },
+                            child: Text('Start Cooking'),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),

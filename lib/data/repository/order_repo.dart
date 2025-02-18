@@ -29,4 +29,14 @@ class OrderRepo {
     return await apiClient.postData(AppConstants.orderStatusUpdate,
         {"order_id": orderId, "order_status": orderStatus, "_method": "put"});
   }
+
+  Future<Response> setIndividualSurge(int orderId, int extraTime) async {
+    return await apiClient.postData(
+      '/api/v1/set-individual-surge',
+      {
+        "order_id": orderId,
+        "extra_time": extraTime
+      }
+    );
+  }
 }

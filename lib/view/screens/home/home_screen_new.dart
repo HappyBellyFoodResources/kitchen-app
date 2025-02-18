@@ -235,7 +235,7 @@ class _HomeScreenNewState extends State<HomeScreenNew>
           body: SmartRefresher(
             onRefresh: () async {
               await Get.find<OrderController>()
-                  .fetchOrders(_tabController?.index);
+                  .fetchOrders(_tabController!.index);
               refreshController.refreshCompleted();
             },
             controller: refreshController,

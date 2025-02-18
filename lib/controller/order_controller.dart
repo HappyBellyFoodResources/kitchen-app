@@ -23,7 +23,7 @@ class OrderController extends GetxController implements GetxService {
   TabController? tabController;
 
   List<Orders>? _orderList = [];
-  List<Orders>? get orderList => _orderList;
+  List<Orders>? get orderList => _orderList ?? [];
   set orderList(List<Orders>? value) {
     _orderList = value;
     update();
@@ -33,6 +33,7 @@ class OrderController extends GetxController implements GetxService {
   bool get isLoading => _isLoading;
   set isLoading(bool value) {
     _isLoading = value;
+    update();
   }
 
   final int _orderListLength = 0;
@@ -88,15 +89,7 @@ class OrderController extends GetxController implements GetxService {
           scrollController.position.maxScrollExtent) {
         if (_offset < _pageSize) {
           _offset++;
-          if (_currentIndex == 0) {
-            getOrderList(_offset, reload: false);
-          } else if (_currentIndex == 1) {
-            filterOrder("confirmed", offset, reload: false);
-          } else if (_currentIndex == 2) {
-            filterOrder("cooking", offset, reload: false);
-          } else if (_currentIndex == 3) {
-            filterOrder("ready_for_delivering", offset, reload: false);
-          }
+          fetchOrders(_currentIndex);
         } else {
           _isShadow = false;
           update();
@@ -105,20 +98,19 @@ class OrderController extends GetxController implements GetxService {
     });
   }
 
-  Future<void> fetchOrders(index) async {
+  Future<void> fetchOrders(int index) async {
     switch (index) {
       case 0:
-        await Get.find<OrderController>().getOrderList(1);
+        await getOrderList(1);
         break;
       case 1:
-        await Get.find<OrderController>().filterOrder('confirmed', 1);
+        await filterOrder('confirmed', 1);
         break;
       case 2:
-        await Get.find<OrderController>().filterOrder('cooking', 1);
+        await filterOrder('cooking', 1);
         break;
       case 3:
-        await Get.find<OrderController>()
-            .filterOrder('ready_for_delivering', 1);
+        await filterOrder('ready_for_delivering', 1);
         break;
     }
   }
@@ -130,7 +122,7 @@ class OrderController extends GetxController implements GetxService {
     Tab(text: 'done'.tr),
   ];
 
-  Future<void> getOrderList(int offset,
+    Future<void> getOrderList(int offset,
       {bool reload = true, bool refetch = false}) async {
     _offset = offset;
 
@@ -164,27 +156,6 @@ class OrderController extends GetxController implements GetxService {
       ApiChecker.checkApi(response);
     }
     _isLoading = false;
-    update();
-  }
-
-  Future<void> searchOrder(String orderId) async {
-    _isFirst = true;
-    _orderList = null;
-    setIndex(0);
-    updateOrderStatusTabs(OrderStatusTabs.all);
-    Response response = await orderRepo.searchOrder(orderId);
-    if (response.statusCode == 200) {
-      _orderList = [];
-      OrderModel orderModel = OrderModel.fromJson(response.body);
-      for (var order in orderModel.data!) {
-        _orderList!.add(order);
-      }
-
-      _isLoading = false;
-      _isFirst = false;
-    } else {
-      ApiChecker.checkApi(response);
-    }
     update();
   }
 
@@ -233,74 +204,87 @@ class OrderController extends GetxController implements GetxService {
     update();
   }
 
-  Future<OrderDetailsModel> getOrderDetails(int orderID) async {
-    _isDetails = true;
-    Response apiResponse = await orderRepo.getOrderDetails(orderID);
-    if (apiResponse.statusCode == 200) {
-      if (apiResponse.body['order']['order_status'] != 'delivered' &&
-          apiResponse.body['order']['order_status'] != 'out_for_delivery') {
-        _orderDetails = OrderDetailsModel.fromJson(apiResponse.body);
-        cachedOrderDetails
-            .add(CachedOrderDetailsModel(id: orderID, details: _orderDetails));
-      }
-    } else {
-      ApiChecker.checkApi(apiResponse);
-    }
-    _isDetails = false;
-    update();
-    return _orderDetails;
-  }
+  void updateOrderStatusTabs(OrderStatusTabs bookingStatusTabs) {
+  _selectedBookingStatus = bookingStatusTabs;
+}
 
   Future<void> orderStatusUpdate(int orderId, String orderStatus) async {
-    _isLoading = true;
-    update();
-    Response response = await orderRepo.updateOrderStatus(orderId, orderStatus);
-    if (response.statusCode == 200) {
-      if (orderStatus == "cooking") {
-        setIndex(2);
-      } else {
-        setIndex(3);
-      }
+  isLoading = true;
+  Response response = await orderRepo.updateOrderStatus(orderId, orderStatus);
+  if (response.statusCode == 200) {
+    fetchOrders(tabController?.index ?? 0);
+    showCustomSnackBar("Order status updated successfully!", isError: false);
+  } else {
+    ApiChecker.checkApi(response);
+  }
+  isLoading = false;
+}
 
-      fetchOrders(tabController?.index);
-      showCustomSnackBar("order_status_updated_successfully".tr,
-          isError: false);
-      // if (Get.width < 640) {
-      //   Get.to(const HomeScreen(fromFilter: true));
-      // }
+  void setOrderIdForOrderDetails(int orderId, String orderStatus, String orderNote) {
+  _orderId = orderId;
+  _orderStatus = orderStatus;
+  _orderNote = orderNote;
+  update();
+}
+
+  Future<OrderDetailsModel> getOrderDetails(int orderID) async {
+  _isDetails = true;
+  Response apiResponse = await orderRepo.getOrderDetails(orderID);
+  if (apiResponse.statusCode == 200) {
+    _orderDetails = OrderDetailsModel.fromJson(apiResponse.body);
+    cachedOrderDetails.add(CachedOrderDetailsModel(id: orderID, details: _orderDetails));
+  } else {
+    ApiChecker.checkApi(apiResponse);
+  }
+  _isDetails = false;
+  update();
+  return _orderDetails;
+}
+
+  Future<void> startCooking(int orderId) async {
+  await orderStatusUpdate(orderId, 'cooking');
+}
+
+  Future<void> searchOrder(String orderId) async {
+  _isFirst = true;
+  _orderList = null;
+  setIndex(0);
+  updateOrderStatusTabs(OrderStatusTabs.all);
+  
+  Response response = await orderRepo.searchOrder(orderId);
+  if (response.statusCode == 200) {
+    _orderList = [];
+    OrderModel orderModel = OrderModel.fromJson(response.body);
+    for (var order in orderModel.data!) {
+      _orderList!.add(order);
+    }
+    _isLoading = false;
+    _isFirst = false;
+  } else {
+    ApiChecker.checkApi(response);
+  }
+  update();
+}
+
+
+  Future<void> setIndividualSurge(int orderId, int extraTime) async {
+    isLoading = true;
+
+    Response response = await orderRepo.setIndividualSurge(orderId, extraTime);
+    
+    if (response.statusCode == 200) {
+      showCustomSnackBar("Surge time updated successfully!", isError: false);
+      fetchOrders(tabController?.index ?? 0); // Refresh orders
     } else {
       ApiChecker.checkApi(response);
     }
-    update();
-  }
 
-  void updateOrderStatusTabs(OrderStatusTabs bookingStatusTabs) {
-    // _isFirst = true;
-    _selectedBookingStatus = bookingStatusTabs;
-    // _orderList = [];
-    // _isFirst = true;
+    isLoading = false;
   }
-
-  void setOrderIdForOrderDetails(
-      int orderId, String orderStatus, String orderNote) {
-    _orderId = orderId;
-    _orderStatus = orderStatus;
-    _orderNote = orderNote;
-    update();
-  }
-
-  void showBottomLoader() {
-    _isLoading = true;
-    update();
-  }
-
-  void removeFirstLoading() {
-    _isFirst = true;
-    update();
-  }
-
+  
   void setIndex(int index) {
     _currentIndex = index;
     update();
   }
 }
+
