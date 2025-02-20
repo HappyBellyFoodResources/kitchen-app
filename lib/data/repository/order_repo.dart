@@ -39,4 +39,9 @@ class OrderRepo {
       }
     );
   }
+
+  Future<Response> setGeneralSurge(int extraTime) async {
+  return await apiClient.postData('/api/v1/set-general-surge', {"extra_time": extraTime});
+}
+
 }

@@ -5,6 +5,7 @@ import 'package:happy_belly_kitchen/controller/demo_data_controller.dart';
 import 'package:happy_belly_kitchen/controller/order_controller.dart';
 import 'package:happy_belly_kitchen/data/model/response/order_details_model.dart';
 import 'package:happy_belly_kitchen/data/model/response/order_model.dart';
+import 'package:happy_belly_kitchen/view/base/custom_snackbar.dart';
 import 'package:happy_belly_kitchen/view/screens/home/widget/new/order_list.dart';
 import 'package:happy_belly_kitchen/view/screens/home/widget/new/order_summary_item.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -28,6 +29,8 @@ class OrderItem extends StatefulWidget {
 class _OrderItemState extends State<OrderItem> {
   Future<OrderDetailsModel>? orderDetails;
   var demoOrderDetails = DemoDataController().demoOrderDetails;
+  bool isSurgeActive = false;
+
 
   @override
   void initState() {
@@ -110,6 +113,39 @@ class _OrderItemState extends State<OrderItem> {
                               'Order ID: ${widget.item.id}',
                               style:
                                   const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 5),
+                              decoration: ShapeDecoration(
+                                color: isSurgeActive ? Colors.red : const Color.fromARGB(255, 208, 222, 247),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                              ),
+                              child: GestureDetector(
+                                onTap: () async {
+                                  if (widget.item.id == null) {
+                                    showCustomSnackBar("Error: Order ID is missing", isError: true);
+                                    return;
+                                  }
+                                    int extraTime = isSurgeActive ? 0 : 10;
+                                    await Get.find<OrderController>().setIndividualSurge(widget.item.id!, extraTime);
+                                    if (mounted) { 
+                                      setState(() {
+                                        isSurgeActive = !isSurgeActive;
+                                      });
+                                    }
+                                  },   
+                                child: Text(
+                                  "Individual surge",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: isSurgeActive ? Colors.white : Color(0xFF4F4F4F),
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
                             ),
                             Container(
                               padding: const EdgeInsets.symmetric(

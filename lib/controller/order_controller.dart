@@ -268,17 +268,29 @@ class OrderController extends GetxController implements GetxService {
 
 
   Future<void> setIndividualSurge(int orderId, int extraTime) async {
-    isLoading = true;
+  isLoading = true;
 
-    Response response = await orderRepo.setIndividualSurge(orderId, extraTime);
-    
+  Response response = await orderRepo.setIndividualSurge(orderId, extraTime);
+
+  if (response.statusCode == 200) {
+    showCustomSnackBar("Surge time updated successfully!", isError: false);
+    fetchOrders(tabController?.index ?? 0); // Refresh orders
+  } else {
+    ApiChecker.checkApi(response);
+  }
+
+  isLoading = false;
+}
+
+  Future<void> setGeneralSurge(int extraTime) async {
+    isLoading = true;
+    Response response = await orderRepo.setGeneralSurge(extraTime);
     if (response.statusCode == 200) {
-      showCustomSnackBar("Surge time updated successfully!", isError: false);
-      fetchOrders(tabController?.index ?? 0); // Refresh orders
+      showCustomSnackBar("General Surge applied successfully!", isError: false);
+      fetchOrders(tabController?.index ?? 0);
     } else {
       ApiChecker.checkApi(response);
     }
-
     isLoading = false;
   }
   

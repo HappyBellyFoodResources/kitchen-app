@@ -51,6 +51,10 @@ class _HomeScreenNewState extends State<HomeScreenNew>
     super.dispose();
   }
 
+  void _setGeneralSurge() {
+    Get.find<OrderController>().setGeneralSurge(10);
+  }
+
   @override
   Widget build(BuildContext context) {
     Size screen = MediaQuery.of(context).size;
@@ -93,10 +97,11 @@ class _HomeScreenNewState extends State<HomeScreenNew>
                             );
                           })
                     }
-                  else
-                    {
+                  else if (value == "general_surge") {
+                    _setGeneralSurge()
+                  } else if (value is int) {
                       setState(() {
-                        active_screen_index = value as int;
+                        active_screen_index = value;
                       })
                     }
                 },
@@ -112,6 +117,10 @@ class _HomeScreenNewState extends State<HomeScreenNew>
                   const PopupMenuItem(
                     value: 0,
                     child: Text('All Screen'),
+                  ),
+                  const PopupMenuItem(
+                    value: "general_surge",
+                    child: Text('General Surge', style: TextStyle(color: Colors.blue)),
                   ),
                   const PopupMenuItem(
                     value: 'logout',
