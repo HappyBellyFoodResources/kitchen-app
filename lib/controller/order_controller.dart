@@ -282,9 +282,9 @@ class OrderController extends GetxController implements GetxService {
   isLoading = false;
 }
 
-  Future<void> setGeneralSurge(int extraTime) async {
+  Future<void> setGeneralSurge(int preparationTime) async {
     isLoading = true;
-    Response response = await orderRepo.setGeneralSurge(extraTime);
+    Response response = await orderRepo.setGeneralSurge(preparationTime);
     if (response.statusCode == 200) {
       showCustomSnackBar("General Surge applied successfully!", isError: false);
       fetchOrders(tabController?.index ?? 0);

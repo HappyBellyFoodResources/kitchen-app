@@ -118,7 +118,10 @@ class _HomeScreenNewState extends State<HomeScreenNew>
                     value: 0,
                     child: Text('All Screen'),
                   ),
-                  const PopupMenuItem(
+                  PopupMenuItem(
+                    onTap: () {
+                      callSetGeneralSurge();
+                    },
                     value: "general_surge",
                     child: Text('General Surge', style: TextStyle(color: Colors.blue)),
                   ),
@@ -280,6 +283,10 @@ class _HomeScreenNewState extends State<HomeScreenNew>
           )),
     );
   }
+}
+
+void callSetGeneralSurge() {
+  Get.find<OrderController>().setGeneralSurge(10);
 }
 
 Future<bool> _onWillPop(BuildContext context) async {
