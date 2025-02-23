@@ -26,26 +26,23 @@ class _HomeScreenNewState extends State<HomeScreenNew>
 
   @override
   void initState() {
-    _tabController = TabController(
-      length: 3,
-      vsync: this,
-    );
-    Get.find<OrderController>().tabController = _tabController;
-    Get.find<OrderController>().fetchOrders(0).then((value) {
-      Get.find<OrderController>().isLoading = false;
-      Get.find<OrderController>().update();
+    super.initState();
+    _tabController = TabController(length: 3, vsync: this);
+    final orderController = Get.find<OrderController>();
+    orderController.tabController = _tabController;
+    orderController.fetchOrders(0).then((_) {
+      orderController.isLoading = false;
+      orderController.update();
     });
 
     _tabController?.addListener(() {
-      Get.find<OrderController>().fetchOrders(_tabController!.index);
+      orderController.fetchOrders(_tabController!.index);
     });
-    super.initState();
   }
 
   @override
   void dispose() {
     _tabController?.dispose();
-
     searchController.dispose();
     refreshController.dispose();
     super.dispose();
@@ -55,84 +52,114 @@ class _HomeScreenNewState extends State<HomeScreenNew>
     Get.find<OrderController>().setGeneralSurge(10);
   }
 
+  void _resetSurge() {
+    Get.find<OrderController>().resetSurge();
+  }
+
   @override
   Widget build(BuildContext context) {
     Size screen = MediaQuery.of(context).size;
     return WillPopScope(
       onWillPop: () async {
-        _onWillPop(context);
-        return true;
+        return _onWillPop(context);
       },
       child: Scaffold(
-          appBar: AppBar(
-            automaticallyImplyLeading: false,
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            toolbarHeight: 90,
-            actions: [
-              PopupMenuButton(
-                onSelected: (value) => {
-                  if (value == "logout")
-                    {
-                      showAnimatedDialog(
-                          context: context,
-                          barrierDismissible: true,
-                          animationType:
-                              DialogTransitionType.slideFromBottomFade,
-                          builder: (BuildContext context) {
-                            return CustomLogOutDialog(
-                              icon: Icons.exit_to_app_rounded,
-                              title: "Logout",
-                              description: "Are you sure you want to logout?",
-                              onTapFalse: () =>
-                                  Navigator.of(context).pop(false),
-                              onTapTrue: () {
-                                Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (_) => const LoginScreen()),
-                                    (route) => false);
-                              },
-                              onTapTrueText: 'yes'.tr,
-                              onTapFalseText: 'no'.tr,
-                            );
-                          })
-                    }
-                  else if (value == "general_surge") {
-                    _setGeneralSurge()
-                  } else if (value is int) {
-                      setState(() {
-                        active_screen_index = value;
-                      })
-                    }
-                },
-                itemBuilder: (_) => [
-                  const PopupMenuItem(
-                    value: 1,
-                    child: Text('Screen 1'),
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          toolbarHeight: 90,
+          actions: [
+            PopupMenuButton(
+              onSelected: (value) {
+                if (value == "logout") {
+                  _showLogoutDialog(context);
+                } else if (value == "general_surge") {
+                  _setGeneralSurge();
+                } else if (value == "reset_surge") {
+                  _resetSurge();
+                } else if (value is int) {
+                  setState(() {
+                    active_screen_index = value;
+                  });
+                }
+              },
+              itemBuilder: (_) => [
+                const PopupMenuItem(value: 1, child: Text('Screen 1')),
+                const PopupMenuItem(value: 2, child: Text('Screen 2')),
+                const PopupMenuItem(value: 0, child: Text('All Screen')),
+                const PopupMenuItem(value: "general_surge", child: Text('General Surge')),
+                const PopupMenuItem(value: "reset_surge", child: Text('Reset Surge')),
+                const PopupMenuItem(
+                  value: "logout",
+                  child: Text('Logout', style: TextStyle(color: Colors.red)),
+                ),
+              ],
+            )
+          ],
+          title: _buildSearchField(),
+          bottom: PreferredSize(
+                preferredSize: const Size(double.infinity, 10),
+                child: SizedBox(
+                  height: 35,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TabBar(
+                            controller: _tabController,
+                            indicatorColor: Theme.of(context).primaryColor,
+                            labelColor: Theme.of(context).primaryColor,
+                            indicatorPadding: EdgeInsets.zero,
+                            padding: const EdgeInsets.only(right: 15),
+                            dividerHeight: 0,
+                            overlayColor: const WidgetStatePropertyAll(
+                                Colors.transparent),
+                            tabAlignment: TabAlignment.start,
+                            isScrollable: true,
+                            unselectedLabelStyle: const TextStyle(
+                              color: Color(0xFF4F4F4F),
+                            ),
+                            tabs: const [
+                              Tab(
+                                text: "All",
+                              ),
+                              Tab(
+                                text: "Confirmed",
+                              ),
+                              Tab(
+                                text: "Cooked",
+                              ),
+                            ]),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 20),
+                        child: Text(
+                            active_screen_index == 0
+                                ? "All Screens"
+                                : "Screen $active_screen_index",
+                            style: const TextStyle(
+                                fontWeight: FontWeight.w600, fontSize: 18)),
+                      ),
+                    ],
                   ),
-                  const PopupMenuItem(
-                    value: 2,
-                    child: Text('Screen 2'),
-                  ),
-                  const PopupMenuItem(
-                    value: 0,
-                    child: Text('All Screen'),
-                  ),
-                  PopupMenuItem(
-                    onTap: () {
-                      callSetGeneralSurge();
-                    },
-                    value: "general_surge",
-                    child: Text('General Surge', style: TextStyle(color: Colors.blue)),
-                  ),
-                  const PopupMenuItem(
-                    value: 'logout',
-                    child: Text('Logout', style: TextStyle(color: Colors.red)),
-                  ),
-                ],
-              )
-            ],
-            title: Container(
+                )),
+        ),
+        body: SmartRefresher(
+          onRefresh: () async {
+            await Get.find<OrderController>().fetchOrders(_tabController!.index);
+            refreshController.refreshCompleted();
+          },
+          controller: refreshController,
+          child: Padding(
+            padding: const EdgeInsets.all(15),
+            child: _buildTabBarView(screen),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSearchField() {
+    return Container(
               height: 45,
               margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
               decoration: ShapeDecoration(
@@ -197,96 +224,59 @@ class _HomeScreenNewState extends State<HomeScreenNew>
                   ),
                 ),
               ),
-            ),
-            bottom: PreferredSize(
-                preferredSize: const Size(double.infinity, 10),
-                child: SizedBox(
-                  height: 35,
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TabBar(
-                            controller: _tabController,
-                            indicatorColor: Theme.of(context).primaryColor,
-                            labelColor: Theme.of(context).primaryColor,
-                            indicatorPadding: EdgeInsets.zero,
-                            padding: const EdgeInsets.only(right: 15),
-                            dividerHeight: 0,
-                            overlayColor: const WidgetStatePropertyAll(
-                                Colors.transparent),
-                            tabAlignment: TabAlignment.start,
-                            isScrollable: true,
-                            unselectedLabelStyle: const TextStyle(
-                              color: Color(0xFF4F4F4F),
-                            ),
-                            tabs: const [
-                              Tab(
-                                text: "All",
-                              ),
-                              Tab(
-                                text: "Confirmed",
-                              ),
-                              Tab(
-                                text: "Cooked",
-                              ),
-                            ]),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 20),
-                        child: Text(
-                            active_screen_index == 0
-                                ? "All Screens"
-                                : "Screen $active_screen_index",
-                            style: const TextStyle(
-                                fontWeight: FontWeight.w600, fontSize: 18)),
-                      ),
-                    ],
-                  ),
-                )),
-          ),
-          body: SmartRefresher(
-            onRefresh: () async {
-              await Get.find<OrderController>()
-                  .fetchOrders(_tabController!.index);
-              refreshController.refreshCompleted();
-            },
-            controller: refreshController,
-            child: Padding(
-              padding: const EdgeInsets.all(15),
-              child: Container(
-                constraints: screen.height > 800 && screen.width > 800
-                    ? const BoxConstraints(maxHeight: 750)
-                    : null,
-                child: TabBarView(
-                    controller: _tabController,
-                    physics: const NeverScrollableScrollPhysics(),
-                    children: [
-                      OrderListView(
-                        activeTab: _tabController?.index ?? 0,
-                        activeScreen: active_screen_index,
-                      ),
-                      OrderListView(
-                        activeTab: _tabController?.index ?? 0,
-                        activeScreen: active_screen_index,
-                      ),
-                      OrderListView(
-                        activeTab: _tabController?.index ?? 0,
-                        activeScreen: active_screen_index,
-                      ),
-                      // OrderListView(
-                      //   activeTab: _tabController?.index ?? 0,
-                      //   activeScreen: active_screen_index,
-                      // ),
-                    ]),
-              ),
-            ),
-          )),
+            );
+  }
+
+  Widget _buildTabBar(BuildContext context) {
+    return TabBar(
+      controller: _tabController,
+      indicatorColor: Theme.of(context).primaryColor,
+      labelColor: Theme.of(context).primaryColor,
+      isScrollable: true,
+      tabs: const [
+        Tab(text: "All"),
+        Tab(text: "Confirmed"),
+        Tab(text: "Cooked"),
+      ],
+    );
+  }
+
+  Widget _buildTabBarView(Size screen) {
+    return Container(
+      constraints: screen.height > 800 && screen.width > 800
+          ? const BoxConstraints(maxHeight: 750)
+          : null,
+      child: TabBarView(
+        controller: _tabController,
+        physics: const NeverScrollableScrollPhysics(),
+        children: List.generate(3, (index) => OrderListView(
+          activeTab: _tabController?.index ?? 0,
+          activeScreen: active_screen_index,
+        )),
+      ),
     );
   }
 }
 
-void callSetGeneralSurge() {
-  Get.find<OrderController>().setGeneralSurge(10);
+void _showLogoutDialog(BuildContext context) {
+  showAnimatedDialog(
+    context: context,
+    barrierDismissible: true,
+    animationType: DialogTransitionType.slideFromBottomFade,
+    builder: (context) => CustomLogOutDialog(
+      icon: Icons.exit_to_app_rounded,
+      title: "Logout",
+      description: "Are you sure you want to logout?",
+      onTapFalse: () => Navigator.of(context).pop(false),
+      onTapTrue: () => Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
+        (route) => false,
+      ),
+      onTapTrueText: 'yes'.tr,
+      onTapFalseText: 'no'.tr,
+    ),
+  );
 }
 
 Future<bool> _onWillPop(BuildContext context) async {

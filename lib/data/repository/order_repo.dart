@@ -43,4 +43,8 @@ class OrderRepo {
   Future<Response> setGeneralSurge(int preparationTime) async {
     return await apiClient.postData('/api/v1/set_general_surge', {"preparation_time": preparationTime});
   }
+
+  Future<Response> resetSurge() async {
+    return await apiClient.postData('/api/v1/reset-surge', {});
+  }
 }

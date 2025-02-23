@@ -21,6 +21,7 @@ class AppConstants {
   static const String fcmTokenUri = '/api/v1/kitchen/update-fcm-token';
   static const String setGeneralSurge = '/api/v1/set_general_surge';
   static const String setIndividualSurge = '/api/v1/set-individual-surge';
+  static const String resetSurge = '/api/v1/reset-surge';
 
   // Shared Key
   static const String theme = 'theme';

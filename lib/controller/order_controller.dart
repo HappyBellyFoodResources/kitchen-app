@@ -293,6 +293,22 @@ class OrderController extends GetxController implements GetxService {
     }
     isLoading = false;
   }
+
+  Future<void> resetSurge() async {
+  isLoading = true;
+
+  Response response = await orderRepo.resetSurge();
+
+  if (response.statusCode == 201) {
+    showCustomSnackBar("Surge reset successfully!", isError: false);
+    fetchOrders(tabController?.index ?? 0); // Refresh orders
+  } else {
+    ApiChecker.checkApi(response);
+  }
+
+  isLoading = false;
+}
+
   
   void setIndex(int index) {
     _currentIndex = index;

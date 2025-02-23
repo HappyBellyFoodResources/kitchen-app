@@ -211,6 +211,18 @@ class ApiClient extends GetxService {
       return const Response(statusCode: 1, statusText: 'Error setting individual surge');
     }
   }
+
+  // Method to reset Surge
+  Future<Response> resetSurge() async {
+    final url = '${appBaseUrl!}${AppConstants.resetSurge}';
+
+    try {
+      final response = await postData(url, {});
+      return response;
+    } catch (e) {
+      return const Response(statusCode: 1, statusText: 'Error resetting surge');
+    }
+  }
 }
 
 class MultipartBody {

@@ -29,7 +29,6 @@ class OrderItem extends StatefulWidget {
 class _OrderItemState extends State<OrderItem> {
   Future<OrderDetailsModel>? orderDetails;
   var demoOrderDetails = DemoDataController().demoOrderDetails;
-  bool isSurgeActive = false;
 
 
   @override
@@ -118,7 +117,7 @@ class _OrderItemState extends State<OrderItem> {
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 10, vertical: 5),
                               decoration: ShapeDecoration(
-                                color: isSurgeActive ? Colors.red : const Color.fromARGB(255, 208, 222, 247),
+                                color: Color.fromARGB(255, 208, 222, 247),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15),
                                 ),
@@ -129,19 +128,13 @@ class _OrderItemState extends State<OrderItem> {
                                     showCustomSnackBar("Error: Order ID is missing", isError: true);
                                     return;
                                   }
-                                    int extraTime = isSurgeActive ? 0 : 10;
-                                    await Get.find<OrderController>().setIndividualSurge(widget.item.id!, extraTime);
-                                    if (mounted) { 
-                                      setState(() {
-                                        isSurgeActive = !isSurgeActive;
-                                      });
-                                    }
+                                    await Get.find<OrderController>().setIndividualSurge(widget.item.id!, 10);
                                   },   
-                                child: Text(
+                                child: const Text(
                                   "Individual surge",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                    color: isSurgeActive ? Colors.white : Color(0xFF4F4F4F),
+                                    color: Color(0xFF4F4F4F),
                                     fontSize: 12,
                                   ),
                                 ),

@@ -118,22 +118,11 @@ class OrderCardWidget extends StatelessWidget {
                               ),
                             ],
                           )),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              orderController.setIndividualSurge(order.id!, 10);
-                            },
-                            child: Text('Set Individual Surge'),
-                          ),
-                          ElevatedButton(
-                            onPressed: () {
-                              orderController.startCooking(order.id!);
-                            },
-                            child: Text('Start Cooking'),
-                          ),
-                        ],
+                      ElevatedButton(
+                        onPressed: () {
+                          orderController.startCooking(order.id!);
+                        },
+                        child: const Text('Start Cooking'),
                       ),
                     ],
                   ),
