@@ -1,5 +1,6 @@
 import 'package:happy_belly_kitchen/view/screens/auth/login_screen.dart';
 import 'package:happy_belly_kitchen/view/screens/home/home_screen_new.dart';
+import 'package:happy_belly_kitchen/view/screens/products/products_screen.dart';
 import 'package:happy_belly_kitchen/view/screens/splash/splash_screen.dart';
 import 'package:get/get.dart';
 
@@ -8,10 +9,12 @@ class RouteHelper {
   static const String splash = '/splash';
   static const String home = '/home';
   static const String login = '/login';
+  static const String products = '/products';
 
   static getInitialRoute() => initial;
   static getSplashRoute() => splash;
   static getLoginRoute() => login;
+  static getProductsRoute() => products;
   static getHomeRoute(String name) => '$home?name=$name';
 
   static List<GetPage> routes = [
@@ -19,5 +22,6 @@ class RouteHelper {
     GetPage(name: splash, page: () => const SplashScreen()),
     GetPage(name: home, page: () => const HomeScreenNew()),
     GetPage(name: login, page: () => const LoginScreen()),
+    GetPage(name: products, page: () => const ProductsScreen()),
   ];
 }

@@ -22,6 +22,9 @@ class AppConstants {
   static const String setGeneralSurge = '/api/v1/set_general_surge';
   static const String setIndividualSurge = '/api/v1/set-individual-surge';
   static const String resetSurge = '/api/v1/reset-surge';
+  static const String kitchenProducts = '/api/v1/kitchen/products';
+  static const String productToggle = '/api/v1/products/{productId}/toggle-status';
+
 
   // Shared Key
   static const String theme = 'theme';

@@ -6,6 +6,7 @@ import 'package:happy_belly_kitchen/controller/order_controller.dart';
 import 'package:happy_belly_kitchen/view/base/animated_dialog.dart';
 import 'package:happy_belly_kitchen/view/base/logout_dialog.dart';
 import 'package:happy_belly_kitchen/view/screens/auth/login_screen.dart';
+import 'package:happy_belly_kitchen/view/screens/products/products_screen.dart';
 import 'package:pull_to_refresh_plus/pull_to_refresh_plus.dart';
 import 'widget/new/order_list_view.dart';
 
@@ -77,6 +78,8 @@ class _HomeScreenNewState extends State<HomeScreenNew>
                   _setGeneralSurge();
                 } else if (value == "reset_surge") {
                   _resetSurge();
+                } else if (value == "products_screen") {
+                  Get.to(() => const ProductsScreen()); // Navigate to Products Screen
                 } else if (value is int) {
                   setState(() {
                     active_screen_index = value;
@@ -89,6 +92,7 @@ class _HomeScreenNewState extends State<HomeScreenNew>
                 const PopupMenuItem(value: 0, child: Text('All Screen')),
                 const PopupMenuItem(value: "general_surge", child: Text('General Surge')),
                 const PopupMenuItem(value: "reset_surge", child: Text('Reset Surge')),
+                const PopupMenuItem(value: "products_screen", child: Text('Products')),
                 const PopupMenuItem(
                   value: "logout",
                   child: Text('Logout', style: TextStyle(color: Colors.red)),

@@ -117,7 +117,7 @@ class _OrderItemState extends State<OrderItem> {
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 10, vertical: 5),
                               decoration: ShapeDecoration(
-                                color: Color.fromARGB(255, 208, 222, 247),
+                                color: const Color.fromARGB(255, 208, 222, 247),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15),
                                 ),
