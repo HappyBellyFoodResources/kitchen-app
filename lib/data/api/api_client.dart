@@ -181,7 +181,6 @@ class ApiClient extends GetxService {
     return response0;
   }
 
-  // Method to set General Surge
   Future<Response> setGeneralSurge(int preparationTime) async {
     final url = '${appBaseUrl!}${AppConstants.setGeneralSurge}';
     
@@ -196,7 +195,25 @@ class ApiClient extends GetxService {
     }
   }
 
-  // Method to set Individual Surge
+  Future<Response> patchData(String uri, dynamic body, {Map<String, String>? headers}) async {
+  try {
+    debugPrint('====> API PATCH Call: $uri\nToken: $token');
+    debugPrint('====> API PATCH Body: $body');
+
+    http.Response response = await http
+        .patch(
+          Uri.parse(appBaseUrl! + uri),
+          body: jsonEncode(body),
+          headers: headers ?? _mainHeaders,
+        )
+        .timeout(Duration(seconds: timeoutInSeconds));
+    return handleResponse(response);
+  } catch (e) {
+    debugPrint("PATCH request error: $e");
+    return const Response(statusCode: 1, statusText: 'Error updating data');
+  }
+}
+
   Future<Response> setIndividualSurge(String orderId, int extraTime) async {
     final url = '${appBaseUrl!}${AppConstants.setIndividualSurge}';
     
@@ -212,7 +229,6 @@ class ApiClient extends GetxService {
     }
   }
 
-  // Method to reset Surge
   Future<Response> resetSurge() async {
     final url = '${appBaseUrl!}${AppConstants.resetSurge}';
 

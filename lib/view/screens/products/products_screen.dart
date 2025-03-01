@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:happy_belly_kitchen/data/api/api_client.dart';
 import 'package:happy_belly_kitchen/util/app_constants.dart';
 import 'package:get/get.dart';
-import 'dart:convert';
 
 class ProductsScreen extends StatefulWidget {
   const ProductsScreen({super.key});
@@ -26,39 +25,49 @@ class _ProductsScreenState extends State<ProductsScreen> {
   }
 
   Future<void> fetchProducts() async {
-    try {
-      final response = await apiClient.getData(
-        AppConstants.kitchenProducts,
-        headers: {"Authorization": "Bearer ${apiClient.token}"},
-      );
+  try {
+    setState(() {
+      isLoading = true;
+    });
 
-      debugPrint("API Response: ${response.body}");
+    final response = await apiClient.getData(
+      AppConstants.kitchenProducts,
+      headers: {"Authorization": "Bearer ${apiClient.token}"},
+    );
 
-      if (response.statusCode == 200 && response.body != null) {
-        List<dynamic> products = response.body is List ? response.body : response.body['data'] ?? [];
+    debugPrint("API Response: ${response.body}");
 
-        setState(() {
-          menuItems = products.map((product) {
-            return {
-              'id': product['id'],
-              'name': product['name'],
-              'price': product['price']?.toDouble() ?? 0.0,
-              'available': product['available'] ?? false,
-            };
-          }).toList();
-          filteredItems = List.from(menuItems);
-          isLoading = false;
-        });
-      } else {
-        Get.snackbar('Error', 'Failed to load products');
-        setState(() => isLoading = false);
-      }
-    } catch (e) {
-      debugPrint("Fetch error: $e");
-      Get.snackbar('Error', 'An error occurred while fetching products');
-      setState(() => isLoading = false);
+    if (response.statusCode == 200 && response.body != null) {
+      List<dynamic> products = response.body is List ? response.body : response.body['data'] ?? [];
+
+      setState(() {
+        menuItems = products.map((product) {
+          return {
+            'id': product['id'],
+            'name': product['name'],
+            'price': product['price']?.toDouble() ?? 0.0,
+            'available': (product['available'] ?? product['status']) == 1,
+          };
+        }).toList();
+        filteredItems = List.from(menuItems);
+        isLoading = false;
+      });
+    } else {
+      setState(() {
+        isLoading = false;
+      });
+      Get.snackbar('Error', 'Failed to load products');
     }
+  } catch (e) {
+    debugPrint("Fetch error: $e");
+    setState(() {
+      isLoading = false;
+    });
+    Get.snackbar('Error', 'An error occurred while fetching products');
   }
+}
+
+
 
   void filterSearch(String query) {
     setState(() {
@@ -69,41 +78,46 @@ class _ProductsScreenState extends State<ProductsScreen> {
   }
 
   Future<void> toggleProductStatus(int productId, bool newStatus) async {
-    final url = AppConstants.productToggle.replaceFirst("{productId}", productId.toString());
+  final url = AppConstants.productToggle.replaceFirst("{productId}", productId.toString());
 
-    int index = menuItems.indexWhere((item) => item['id'] == productId);
-    if (index == -1) return;
+  int index = menuItems.indexWhere((item) => item['id'] == productId);
+  if (index == -1) return;
 
-    bool oldStatus = menuItems[index]['available'];
+  bool oldStatus = menuItems[index]['available'];
 
-    setState(() {
-      menuItems[index]['available'] = newStatus;
-    });
+  setState(() {
+    menuItems[index]['available'] = newStatus;
+  });
 
-    try {
-      final response = await apiClient.postData(
-        url,
-        {'status': newStatus ? 1 : 0},
-        headers: {"Authorization": "Bearer ${apiClient.token}"},
-      );
+  try {
+    final response = await apiClient.patchData(
+      url,
+      {'status': newStatus ? 1 : 0},
+      headers: {"Authorization": "Bearer ${apiClient.token}"},
+    );
 
-      if (response.statusCode == 200) {
-        final responseData = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      final responseData = response.body;
+      setState(() {
         menuItems[index]['available'] = responseData['product']['status'] == 1;
-      } else {
-        setState(() {
-          menuItems[index]['available'] = oldStatus;
-        });
-        Get.snackbar('Error', 'Failed to update product status');
-      }
-    } catch (e) {
-      debugPrint("Toggle error: $e");
+      });
+    } else {
       setState(() {
         menuItems[index]['available'] = oldStatus;
       });
-      Get.snackbar('Error', 'An error occurred while updating product status');
+      Get.snackbar('Error', 'Failed to update product status');
     }
+  } catch (e) {
+    debugPrint("Toggle error: $e");
+    setState(() {
+      menuItems[index]['available'] = oldStatus;
+    });
+    Get.snackbar('Error', 'An error occurred while updating product status');
   }
+}
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -132,7 +146,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
                     ),
                   ),
                 ),
-                // Data Table
                 Expanded(
                   child: SingleChildScrollView(
                     child: Column(

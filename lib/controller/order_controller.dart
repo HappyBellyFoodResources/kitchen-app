@@ -274,7 +274,7 @@ class OrderController extends GetxController implements GetxService {
 
   if (response.statusCode == 200) {
     showCustomSnackBar("Surge time updated successfully!", isError: false);
-    fetchOrders(tabController?.index ?? 0); // Refresh orders
+    fetchOrders(tabController?.index ?? 0);
   } else {
     ApiChecker.checkApi(response);
   }
@@ -301,7 +301,7 @@ class OrderController extends GetxController implements GetxService {
 
   if (response.statusCode == 201) {
     showCustomSnackBar("Surge reset successfully!", isError: false);
-    fetchOrders(tabController?.index ?? 0); // Refresh orders
+    fetchOrders(tabController?.index ?? 0);
   } else {
     ApiChecker.checkApi(response);
   }
