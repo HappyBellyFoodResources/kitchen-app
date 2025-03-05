@@ -34,19 +34,21 @@ class _OrderItemState extends State<OrderItem> {
   @override
   void initState() {
     super.initState();
-    if (Get.find<OrderController>().isLoading) {
-      orderDetails = Future.value(DemoDataController().demoOrderDetails);
+    final orderController = Get.find<OrderController>();
+    
+    if (orderController.isLoading) {
+      orderDetails = Future.value(demoOrderDetails);
     } else {
-      var cachedDetails = Get.find<OrderController>()
-          .cachedOrderDetails
-          .where((e) => e.id == widget.item.id);
+      var cachedDetails = orderController.cachedOrderDetails.where((e) => e.id == widget.item.id);
       if (cachedDetails.isNotEmpty) {
-        print("Fetching order details from cached");
-        orderDetails = Future.value(cachedDetails.toList().first.details);
+        debugPrint("Fetching order details from cache");
+        orderDetails = Future.value(cachedDetails.first.details);
       } else {
-        print("Fetching order details from network");
-        orderDetails =
-            Get.find<OrderController>().getOrderDetails(widget.item.id!);
+        debugPrint("Fetching order details from network");
+        orderDetails = orderController.getOrderDetails(widget.item.id!);
+        orderDetails!.then((_) {
+          if (mounted) setState(() {});
+        });
       }
     }
   }
@@ -80,6 +82,12 @@ class _OrderItemState extends State<OrderItem> {
 
   @override
   Widget build(BuildContext context) {
+
+  const int defaultPreparationTime = 30;
+  DateTime orderCreatedAt = DateTime.parse(widget.item.createdAt!);
+  DateTime expectedCompletionTime = orderCreatedAt.add(const Duration(minutes: defaultPreparationTime));
+  bool isLate = DateTime.now().isAfter(expectedCompletionTime);
+
     return FutureBuilder<OrderDetailsModel>(
         future: orderDetails,
         builder: (context, asyncSnapshot) {
@@ -182,6 +190,22 @@ class _OrderItemState extends State<OrderItem> {
                                 : Container()
                           ],
                         ),
+                        if (isLate)
+                            Container(
+                              height: 20,
+                              width: 50,
+                              decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: const Text("Late",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.white
+                            ),
+                            ),
+                            ),
                       ],
                     ),
                   ),

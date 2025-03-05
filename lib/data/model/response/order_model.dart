@@ -74,6 +74,7 @@ class Orders {
   String _kitchenNote = '';
   String? _isFirstOrder;
   int? _screenId;
+  bool? _isLate;
 
   Orders(
       {int? id,
@@ -195,6 +196,19 @@ class Orders {
     if (screenId != null) {
       _screenId = screenId;
     }
+
+    if (preparationTime != null) {
+      _isLate = calculateIsLate();
+    }
+  }
+
+    bool calculateIsLate() {
+    if (_createdAt == null || _preparationTime == null) {
+      return false;
+    }
+    DateTime createdTime = DateTime.parse(_createdAt!);
+    DateTime expectedReadyTime = createdTime.add(Duration(minutes: _preparationTime!));
+    return DateTime.now().isAfter(expectedReadyTime);
   }
 
   int? get id => _id;
@@ -226,6 +240,7 @@ class Orders {
   String? get isFirstOrder => _isFirstOrder;
   Table? get table => _table;
   int? get screenId => _screenId;
+  bool? get isLate => calculateIsLate();
 
   Orders.fromJson(Map<String, dynamic> json) {
     _id = json['id'];

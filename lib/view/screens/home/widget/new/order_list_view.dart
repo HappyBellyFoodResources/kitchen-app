@@ -100,7 +100,7 @@ class _OrderListViewState extends State<OrderListView> {
                   })(),
                   enableInfiniteScroll: false,
                 ),
-                itemCount: orderList.length ?? 0,
+                itemCount: orderList.length,
                 itemBuilder:
                     (BuildContext context, int itemIndex, int pageViewIndex) {
                   var item = orderList![itemIndex];

@@ -47,4 +47,8 @@ class OrderRepo {
   Future<Response> resetSurge() async {
     return await apiClient.postData('/api/v1/reset-surge', {});
   }
+
+  Future<Response> getPreparationTime() async {
+    return await apiClient.getData('/api/v1/get-preparation-time');
+  }
 }

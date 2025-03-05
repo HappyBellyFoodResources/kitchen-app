@@ -36,6 +36,9 @@ class OrderController extends GetxController implements GetxService {
     update();
   }
 
+  int _preparationTime = 30; // Default 30 minutes
+  int get preparationTime => _preparationTime;
+  
   final int _orderListLength = 0;
   int get orderListLength => _orderListLength;
   bool _isFirst = true;
@@ -84,6 +87,7 @@ class OrderController extends GetxController implements GetxService {
   @override
   void onInit() {
     super.onInit();
+    fetchPreparationTime();
     scrollController.addListener(() {
       if (scrollController.position.pixels ==
           scrollController.position.maxScrollExtent) {
@@ -204,6 +208,22 @@ class OrderController extends GetxController implements GetxService {
     update();
   }
 
+  bool isOrderLate(DateTime orderCreatedAt) {
+    final now = DateTime.now();
+    final orderDeadline = orderCreatedAt.add(Duration(minutes: _preparationTime));
+    return now.isAfter(orderDeadline);
+  }
+
+    Future<void> fetchPreparationTime() async {
+    Response response = await orderRepo.getPreparationTime();
+    if (response.statusCode == 200) {
+      _preparationTime = response.body['preparation_time'];
+      update();
+    } else {
+      ApiChecker.checkApi(response);
+    }
+  }
+
   void updateOrderStatusTabs(OrderStatusTabs bookingStatusTabs) {
   _selectedBookingStatus = bookingStatusTabs;
 }
@@ -309,7 +329,8 @@ class OrderController extends GetxController implements GetxService {
   isLoading = false;
 }
 
-  
+
+
   void setIndex(int index) {
     _currentIndex = index;
     update();
