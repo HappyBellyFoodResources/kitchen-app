@@ -83,10 +83,23 @@ class _OrderItemState extends State<OrderItem> {
   @override
   Widget build(BuildContext context) {
 
-  const int defaultPreparationTime = 30;
-  DateTime orderCreatedAt = DateTime.parse(widget.item.createdAt!);
-  DateTime expectedCompletionTime = orderCreatedAt.add(const Duration(minutes: defaultPreparationTime));
-  bool isLate = DateTime.now().isAfter(expectedCompletionTime);
+    DateTime? deliveryTime;
+
+    if (widget.item.deliveryTime != null && widget.item.createdAt != null) {
+      try {
+        String? orderDate = widget.item.createdAt?.split('T')[0];
+        if (orderDate != null) {
+          String fullDateTime = "$orderDate ${widget.item.deliveryTime}";
+          debugPrint("Full DateTime: $fullDateTime"); // Log for debugging
+          deliveryTime = DateTime.tryParse(fullDateTime);
+        }
+      } catch (e) {
+        debugPrint("Error parsing deliveryTime: $e");
+      }
+    }
+
+    bool isLate = (deliveryTime != null) ? DateTime.now().isAfter(deliveryTime) : false;
+
 
     return FutureBuilder<OrderDetailsModel>(
         future: orderDetails,

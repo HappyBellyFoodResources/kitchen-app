@@ -87,7 +87,9 @@ class OrderController extends GetxController implements GetxService {
   @override
   void onInit() {
     super.onInit();
-    fetchPreparationTime();
+    if (_orderId != 0) { // Ensure orderId is valid before calling the function
+    fetchPreparationTime(_orderId);
+  } 
     scrollController.addListener(() {
       if (scrollController.position.pixels ==
           scrollController.position.maxScrollExtent) {
@@ -214,15 +216,22 @@ class OrderController extends GetxController implements GetxService {
     return now.isAfter(orderDeadline);
   }
 
-    Future<void> fetchPreparationTime() async {
-    Response response = await orderRepo.getPreparationTime();
-    if (response.statusCode == 200) {
-      _preparationTime = response.body['preparation_time'];
+    Future<void> fetchPreparationTime(int orderId) async {
+  Response response = await orderRepo.getOrderDetails(orderId);
+  if (response.statusCode == 200) {
+    var responseBody = response.body;
+    if (responseBody != null && responseBody['order'] != null) {
+      _preparationTime = responseBody['order']['preparation_time'] ?? 0; // Default to 0 if null
       update();
     } else {
-      ApiChecker.checkApi(response);
+      _preparationTime = 0; // Handle case where order data is missing
+      update();
     }
+  } else {
+    ApiChecker.checkApi(response);
   }
+}
+
 
   void updateOrderStatusTabs(OrderStatusTabs bookingStatusTabs) {
   _selectedBookingStatus = bookingStatusTabs;
