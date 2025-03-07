@@ -74,7 +74,7 @@ class Orders {
   String _kitchenNote = '';
   String? _isFirstOrder;
   int? _screenId;
-  bool? _isLate;
+  bool? isKitchenNoteSeen;
 
   Orders(
       {int? id,
@@ -195,10 +195,6 @@ class Orders {
 
     if (screenId != null) {
       _screenId = screenId;
-    }
-
-    if (preparationTime != null) {
-      _isLate = calculateIsLate();
     }
   }
 

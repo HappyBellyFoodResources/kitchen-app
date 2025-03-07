@@ -25,6 +25,10 @@ class OrderRepo {
         .getData('${AppConstants.orderDetails}?order_id=$orderId');
   }
 
+  Future<Response> markNoteAsSeen(int orderId) async {
+  return await apiClient.postData('/api/v1/orders/$orderId/mark-kitchen-note-seen', {});
+  }
+
   Future<Response> updateOrderStatus(int orderId, String orderStatus) async {
     return await apiClient.postData(AppConstants.orderStatusUpdate,
         {"order_id": orderId, "order_status": orderStatus, "_method": "put"});

@@ -28,12 +28,15 @@ class OrderItem extends StatefulWidget {
 
 class _OrderItemState extends State<OrderItem> {
   Future<OrderDetailsModel>? orderDetails;
+  bool isKitchenNoteSeen = false;
   var demoOrderDetails = DemoDataController().demoOrderDetails;
 
 
   @override
   void initState() {
     super.initState();
+    isKitchenNoteSeen = widget.item.isKitchenNoteSeen ?? false;
+
     final orderController = Get.find<OrderController>();
     
     if (orderController.isLoading) {
@@ -52,6 +55,22 @@ class _OrderItemState extends State<OrderItem> {
       }
     }
   }
+
+  void markNoteAsSeen(bool value) {
+    setState(() {
+      isKitchenNoteSeen = value;
+    });
+    
+    final orderController = Get.find<OrderController>();
+    
+    orderController.markNoteAsSeen(widget.item.id!).catchError((error) {
+      debugPrint("Error updating kitchen note status: $error");
+      setState(() {
+        isKitchenNoteSeen = !value; // Revert on failure
+      });
+    });
+  }
+
 
   String formatTimeAgo(String inputDate) {
     // Parse the input date string into a DateTime object
@@ -232,7 +251,7 @@ class _OrderItemState extends State<OrderItem> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              if (widget.item.kitchenNote != "")
+                              if (widget.item.kitchenNote.isNotEmpty) ...[
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -242,6 +261,14 @@ class _OrderItemState extends State<OrderItem> {
                                         color: Color(0xFF868686),
                                         fontSize: 12,
                                       ),
+                                    ),
+                                    Checkbox(
+                                      value: isKitchenNoteSeen,
+                                      onChanged: (bool? value) {
+                                        if (value != null) {
+                                          markNoteAsSeen(value); // ✅ Pass the boolean value
+                                        }
+                                      },
                                     ),
                                     const Divider(
                                       color: Colors.grey,
@@ -286,6 +313,7 @@ class _OrderItemState extends State<OrderItem> {
                                 color: Colors.grey,
                                 height: 3,
                               ),
+                            ],
                             ],
                           ),
                         ),

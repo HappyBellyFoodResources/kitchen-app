@@ -295,7 +295,6 @@ class OrderController extends GetxController implements GetxService {
   update();
 }
 
-
   Future<void> setIndividualSurge(int orderId, int extraTime) async {
   isLoading = true;
 
@@ -338,7 +337,30 @@ class OrderController extends GetxController implements GetxService {
   isLoading = false;
 }
 
+Future<void> markNoteAsSeen(int orderId) async {
+    try {
+      isLoading = true;
+      Response response = await orderRepo.markNoteAsSeen(orderId);
+      if (response.statusCode == 200) {
+        var order = _orderList?.firstWhereOrNull((o) => o.id == orderId);
+      if (order != null) {
+        order.isKitchenNoteSeen = true;
+      }
 
+        if (order != null) {
+          order.isKitchenNoteSeen = true;
+        }
+        update();
+        showCustomSnackBar("Note marked as seen successfully!", isError: false);
+      } else {
+        ApiChecker.checkApi(response);
+      }
+    } catch (e) {
+      showCustomSnackBar("Error marking note as seen", isError: true);
+    } finally {
+      isLoading = false;
+    }
+  }
 
   void setIndex(int index) {
     _currentIndex = index;

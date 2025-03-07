@@ -239,6 +239,22 @@ class ApiClient extends GetxService {
       return const Response(statusCode: 1, statusText: 'Error resetting surge');
     }
   }
+
+  Future<Response> markKitchenNoteAsSeen(String orderId) async {
+    final url = '${appBaseUrl!}${AppConstants.markKitchenNoteSeen}';
+
+    try {
+      final response = await patchData(url, {
+        'order_id': orderId,
+      });
+
+      return response;
+    } catch (e) {
+      debugPrint("Error marking kitchen note as seen: $e");
+      return const Response(statusCode: 1, statusText: 'Error marking note as seen');
+    }
+  }
+
 }
 
 class MultipartBody {
