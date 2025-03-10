@@ -77,6 +77,63 @@ class _ProductsScreenState extends State<ProductsScreen> {
     });
   }
 
+  void showEditPriceDialog(Map<String, dynamic> item) {
+    TextEditingController priceController =
+        TextEditingController(text: item['price'].toString());
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Edit Price for ${item['name']}"),
+          content: TextField(
+            controller: priceController,
+            keyboardType: TextInputType.number,
+            decoration: const InputDecoration(labelText: "Price"),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                updateProductPrice(item['id'], double.tryParse(priceController.text) ?? item['price']);
+                Navigator.pop(context);
+              },
+              child: const Text("Save"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> updateProductPrice(int productId, double newPrice) async {
+    final url = AppConstants.updateProductPrice.replaceFirst("{productId}", productId.toString());
+
+    int index = menuItems.indexWhere((item) => item['id'] == productId);
+    if (index == -1) return;
+
+    setState(() {
+      menuItems[index]['price'] = newPrice;
+    });
+
+    try {
+      final response = await apiClient.patchData(
+        url,
+        {'price': newPrice},
+        headers: {"Authorization": "Bearer ${apiClient.token}"},
+      );
+
+      if (response.statusCode != 200) {
+        Get.snackbar('Error', 'Failed to update product price');
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'An error occurred while updating product price');
+    }
+  }
+
   Future<void> toggleProductStatus(int productId, bool newStatus) async {
   final url = AppConstants.productToggle.replaceFirst("{productId}", productId.toString());
 
@@ -149,12 +206,13 @@ class _ProductsScreenState extends State<ProductsScreen> {
                       children: [
                         const SizedBox(height: 10),
                         DataTable(
-                          columnSpacing: 20,
+                          columnSpacing: 10,
                           columns: const [
                             DataColumn(label: Text("SL", style: TextStyle(fontWeight: FontWeight.bold))),
                             DataColumn(label: Text("Product", style: TextStyle(fontWeight: FontWeight.bold))),
                             DataColumn(label: Text("Price", style: TextStyle(fontWeight: FontWeight.bold))),
                             DataColumn(label: Text("Enable", style: TextStyle(fontWeight: FontWeight.bold))),
+                            DataColumn(label: Text("", style: TextStyle(fontWeight: FontWeight.bold))),
                           ],
                           rows: filteredItems.map((item) {
                             return DataRow(cells: [
@@ -168,6 +226,16 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                     toggleProductStatus(item["id"], value);
                                   },
                                 ),
+                              ),
+                              DataCell(
+                                GestureDetector(
+                                  onTap: () => showEditPriceDialog(item),
+                                  child: const SizedBox(
+                                    height: 10,
+                                    width: 10,
+                                    child: Icon(Icons.edit, color: Colors.blue, size: 15,),
+                                  ),
+                                )
                               ),
                             ]);
                           }).toList(),

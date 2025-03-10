@@ -26,7 +26,7 @@ class OrderRepo {
   }
 
   Future<Response> markNoteAsSeen(int orderId) async {
-  return await apiClient.postData('/api/v1/orders/$orderId/mark-kitchen-note-seen', {});
+    return await apiClient.patchData('/api/v1/kitchen/order/$orderId/mark-kitchen-note-seen', {});
   }
 
   Future<Response> updateOrderStatus(int orderId, String orderStatus) async {

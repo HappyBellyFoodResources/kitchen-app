@@ -342,16 +342,16 @@ Future<void> markNoteAsSeen(int orderId) async {
       isLoading = true;
       Response response = await orderRepo.markNoteAsSeen(orderId);
       if (response.statusCode == 200) {
-        var order = _orderList?.firstWhereOrNull((o) => o.id == orderId);
-      if (order != null) {
+      var order = _orderList?.firstWhereOrNull((o) => o.id == orderId);
+      if (order == null) return;
+
+      if (order.isKitchenNoteSeen == true) {
+        order.isKitchenNoteSeen = false;
+      } else {
         order.isKitchenNoteSeen = true;
       }
-
-        if (order != null) {
-          order.isKitchenNoteSeen = true;
-        }
+      
         update();
-        showCustomSnackBar("Note marked as seen successfully!", isError: false);
       } else {
         ApiChecker.checkApi(response);
       }

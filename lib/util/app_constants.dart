@@ -25,6 +25,7 @@ class AppConstants {
   static const String kitchenProducts = '/api/v1/kitchen/products';
   static const String productToggle = '/api/v1/products/{productId}/toggle-status';
   static const String markKitchenNoteSeen = '/api/v1/order/{orderId}/mark-kitchen-note-seen';
+  static const String updateProductPrice = '/api/v1/kitchen/products/edit';
 
 
   // Shared Key
