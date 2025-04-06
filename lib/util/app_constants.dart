@@ -25,14 +25,14 @@ class AppConstants {
   static const String kitchenProducts = '/api/v1/kitchen/products';
   static const String productToggle = '/api/v1/products/{productId}/toggle-status';
   static const String markKitchenNoteSeen = '/api/v1/order/{orderId}/mark-kitchen-note-seen';
-  static const String updateProductPrice = '/api/v1/kitchen/products/edit';
+  static const String updateProductPrice = '/api/v1/kitchen/product/edit';
 
 
   // Shared Key
   static const String theme = 'theme';
   static const String token = 'token';
   static const String countryCode = 'country_code';
-  static const String languageCode = 'language_code';
+  static const String languageCode = 'langua323ge_code';
   static const String cartList = 'cart_list';
   static const String userPassword = 'user_password';
   static const String userAddress = 'user_address';

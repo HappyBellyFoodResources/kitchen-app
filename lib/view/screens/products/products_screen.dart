@@ -30,10 +30,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
       isLoading = true;
     });
 
-    final response = await apiClient.getData(
-      AppConstants.kitchenProducts,
-      headers: {"Authorization": "Bearer ${apiClient.token}"},
-    );
+    final response = await apiClient.getData(AppConstants.kitchenProducts);
 
     debugPrint("API Response: ${response.body}");
 
@@ -98,7 +95,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
             ),
             TextButton(
               onPressed: () {
-                updateProductPrice(item['id'], double.tryParse(priceController.text) ?? item['price']);
+                updateProductPrice(item['id'], priceController.text);
                 Navigator.pop(context);
               },
               child: const Text("Save"),
@@ -109,30 +106,41 @@ class _ProductsScreenState extends State<ProductsScreen> {
     );
   }
 
-  Future<void> updateProductPrice(int productId, double newPrice) async {
-    final url = AppConstants.updateProductPrice.replaceFirst("{productId}", productId.toString());
+  Future<void> updateProductPrice(int productId, String newPrice) async {
 
-    int index = menuItems.indexWhere((item) => item['id'] == productId);
-    if (index == -1) return;
+  int index = menuItems.indexWhere((item) => item['id'] == productId);
+  if (index == -1) return;
 
-    setState(() {
-      menuItems[index]['price'] = newPrice;
-    });
+  // Update the local price immediately
+  setState(() {
+    menuItems[index]['price'] = newPrice;
+  });
 
-    try {
-      final response = await apiClient.patchData(
-        url,
-        {'price': newPrice},
-        headers: {"Authorization": "Bearer ${apiClient.token}"},
-      );
+  try {
+    // Send updated price as a string
+    final response = await apiClient.patchData(
+       AppConstants.updateProductPrice,
+      {
+        'product_id': productId.toString(),
+        'price': newPrice,
+      },
+    );
 
-      if (response.statusCode != 200) {
-        Get.snackbar('Error', 'Failed to update product price');
-      }
-    } catch (e) {
-      Get.snackbar('Error', 'An error occurred while updating product price');
+    debugPrint("Response Status: ${response.statusCode}");
+    debugPrint("Response Body: ${response.body}");
+
+    if (response.statusCode == 200) {
+      Get.snackbar('Success', 'Product price updated');
+    } else {
+      Get.snackbar('Error', 'Failed to update product price');
     }
+  } catch (e) {
+    debugPrint("Exception: $e");
+    Get.snackbar('Error', 'An error occurred while updating product price');
   }
+}
+
+
 
   Future<void> toggleProductStatus(int productId, bool newStatus) async {
   final url = AppConstants.productToggle.replaceFirst("{productId}", productId.toString());
@@ -150,7 +158,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
     final response = await apiClient.patchData(
       url,
       {'status': newStatus ? 1 : 0},
-      headers: {"Authorization": "Bearer ${apiClient.token}"},
     );
 
     if (response.statusCode == 200) {
@@ -218,7 +225,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                             return DataRow(cells: [
                               DataCell(Text(item["id"].toString())),
                               DataCell(Text(item["name"])),
-                              DataCell(Text("₦${item["price"].toStringAsFixed(2)}")),
+                              DataCell(Text("₦${item["price"]}")),
                               DataCell(
                                 Switch(
                                   value: item["available"] ?? false,
