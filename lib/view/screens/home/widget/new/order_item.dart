@@ -163,13 +163,13 @@ class _OrderItemState extends State<OrderItem> {
                                 ),
                               ),
                               child: GestureDetector(
-                                onTap: () async {
+                                onTap: () {
                                   if (widget.item.id == null) {
                                     showCustomSnackBar("Error: Order ID is missing", isError: true);
                                     return;
                                   }
-                                    await Get.find<OrderController>().setIndividualSurge(widget.item.id!, 10);
-                                  },   
+                                  showSurgeTimeDialog(widget.item.id!);
+                                }, 
                                 child: const Text(
                                   "Individual surge",
                                   textAlign: TextAlign.center,
@@ -466,4 +466,43 @@ class _OrderItemState extends State<OrderItem> {
           );
         });
   }
+  void showSurgeTimeDialog(int orderId) {
+  TextEditingController timeController = TextEditingController();
+
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: const Text("Set Extra Preparation Time"),
+        content: TextField(
+          controller: timeController,
+          keyboardType: TextInputType.number,
+          decoration: const InputDecoration(
+            labelText: "Enter time in minutes",
+            border: OutlineInputBorder(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text("Cancel"),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              final enteredTime = int.tryParse(timeController.text);
+              if (enteredTime == null || enteredTime < 0) {
+                showCustomSnackBar("Please enter a valid number", isError: true);
+                return;
+              }
+              Navigator.of(context).pop();
+              await Get.find<OrderController>().setIndividualSurge(orderId, enteredTime);
+            },
+            child: const Text("Apply Surge"),
+          ),
+        ],
+      );
+    },
+  );
+}
+
 }

@@ -75,7 +75,7 @@ class _HomeScreenNewState extends State<HomeScreenNew>
                 if (value == "logout") {
                   _showLogoutDialog(context);
                 } else if (value == "general_surge") {
-                  _setGeneralSurge();
+                  _showGeneralSurgeDialog();
                 } else if (value == "reset_surge") {
                   _resetSurge();
                 } else if (value == "products_screen") {
@@ -260,6 +260,47 @@ class _HomeScreenNewState extends State<HomeScreenNew>
       ),
     );
   }
+  void _showGeneralSurgeDialog() {
+  TextEditingController timeController = TextEditingController();
+
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: const Text("Set General Surge Time"),
+        content: TextField(
+          controller: timeController,
+          keyboardType: TextInputType.number,
+          decoration: const InputDecoration(
+            labelText: "Enter extra time in minutes",
+            border: OutlineInputBorder(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text("Cancel"),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              final enteredTime = int.tryParse(timeController.text);
+              if (enteredTime == null || enteredTime < 0) {
+                Get.snackbar("Invalid Input", "Please enter a valid number",
+                    backgroundColor: Colors.red.withOpacity(0.8),
+                    colorText: Colors.white);
+                return;
+              }
+              Navigator.of(context).pop();
+              Get.find<OrderController>().setGeneralSurge(enteredTime);
+            },
+            child: const Text("Apply Surge"),
+          ),
+        ],
+      );
+    },
+  );
+}
+
 }
 
 void _showLogoutDialog(BuildContext context) {
