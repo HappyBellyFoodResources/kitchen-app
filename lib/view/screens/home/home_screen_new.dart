@@ -282,6 +282,10 @@ class _HomeScreenNewState extends State<HomeScreenNew>
             child: const Text("Cancel"),
           ),
           ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              foregroundColor: Colors.black, // This sets the text color
+              backgroundColor: const Color.fromARGB(255, 215, 215, 215),
+            ),
             onPressed: () {
               final enteredTime = int.tryParse(timeController.text);
               if (enteredTime == null || enteredTime < 0) {
@@ -293,7 +297,7 @@ class _HomeScreenNewState extends State<HomeScreenNew>
               Navigator.of(context).pop();
               Get.find<OrderController>().setGeneralSurge(enteredTime);
             },
-            child: const Text("Apply Surge"),
+            child: const Text("Apply Surge", style: TextStyle(color: Colors.black),),
           ),
         ],
       );

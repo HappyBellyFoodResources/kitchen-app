@@ -488,6 +488,10 @@ class _OrderItemState extends State<OrderItem> {
             child: const Text("Cancel"),
           ),
           ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              foregroundColor: Colors.black, // This sets the text color
+              backgroundColor: const Color.fromARGB(255, 215, 215, 215),
+            ),
             onPressed: () async {
               final enteredTime = int.tryParse(timeController.text);
               if (enteredTime == null || enteredTime < 0) {
