@@ -79,7 +79,8 @@ class _HomeScreenNewState extends State<HomeScreenNew>
                 } else if (value == "reset_surge") {
                   _resetSurge();
                 } else if (value == "products_screen") {
-                  Get.to(() => const ProductsScreen()); // Navigate to Products Screen
+                  Get.to(() =>
+                      const ProductsScreen()); // Navigate to Products Screen
                 } else if (value is int) {
                   setState(() {
                     active_screen_index = value;
@@ -90,9 +91,12 @@ class _HomeScreenNewState extends State<HomeScreenNew>
                 const PopupMenuItem(value: 1, child: Text('Screen 1')),
                 const PopupMenuItem(value: 2, child: Text('Screen 2')),
                 const PopupMenuItem(value: 0, child: Text('All Screen')),
-                const PopupMenuItem(value: "general_surge", child: Text('General Surge')),
-                const PopupMenuItem(value: "reset_surge", child: Text('Reset Surge')),
-                const PopupMenuItem(value: "products_screen", child: Text('Products')),
+                const PopupMenuItem(
+                    value: "general_surge", child: Text('General Surge')),
+                const PopupMenuItem(
+                    value: "reset_surge", child: Text('Reset Surge')),
+                const PopupMenuItem(
+                    value: "products_screen", child: Text('Products')),
                 const PopupMenuItem(
                   value: "logout",
                   child: Text('Logout', style: TextStyle(color: Colors.red)),
@@ -102,54 +106,55 @@ class _HomeScreenNewState extends State<HomeScreenNew>
           ],
           title: _buildSearchField(),
           bottom: PreferredSize(
-                preferredSize: const Size(double.infinity, 10),
-                child: SizedBox(
-                  height: 35,
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TabBar(
-                            controller: _tabController,
-                            indicatorColor: Theme.of(context).primaryColor,
-                            labelColor: Theme.of(context).primaryColor,
-                            indicatorPadding: EdgeInsets.zero,
-                            padding: const EdgeInsets.only(right: 15),
-                            dividerHeight: 0,
-                            overlayColor: const WidgetStatePropertyAll(
-                                Colors.transparent),
-                            tabAlignment: TabAlignment.start,
-                            isScrollable: true,
-                            unselectedLabelStyle: const TextStyle(
-                              color: Color(0xFF4F4F4F),
+              preferredSize: const Size(double.infinity, 10),
+              child: SizedBox(
+                height: 35,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TabBar(
+                          controller: _tabController,
+                          indicatorColor: Theme.of(context).primaryColor,
+                          labelColor: Theme.of(context).primaryColor,
+                          indicatorPadding: EdgeInsets.zero,
+                          padding: const EdgeInsets.only(right: 15),
+                          dividerHeight: 0,
+                          overlayColor:
+                              const WidgetStatePropertyAll(Colors.transparent),
+                          tabAlignment: TabAlignment.start,
+                          isScrollable: true,
+                          unselectedLabelStyle: const TextStyle(
+                            color: Color(0xFF4F4F4F),
+                          ),
+                          tabs: const [
+                            Tab(
+                              text: "All",
                             ),
-                            tabs: const [
-                              Tab(
-                                text: "All",
-                              ),
-                              Tab(
-                                text: "Confirmed",
-                              ),
-                              Tab(
-                                text: "Cooked",
-                              ),
-                            ]),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 20),
-                        child: Text(
-                            active_screen_index == 0
-                                ? "All Screens"
-                                : "Screen $active_screen_index",
-                            style: const TextStyle(
-                                fontWeight: FontWeight.w600, fontSize: 18)),
-                      ),
-                    ],
-                  ),
-                )),
+                            Tab(
+                              text: "Confirmed",
+                            ),
+                            Tab(
+                              text: "Cooked",
+                            ),
+                          ]),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 20),
+                      child: Text(
+                          active_screen_index == 0
+                              ? "All Screens"
+                              : "Screen $active_screen_index",
+                          style: const TextStyle(
+                              fontWeight: FontWeight.w600, fontSize: 18)),
+                    ),
+                  ],
+                ),
+              )),
         ),
         body: SmartRefresher(
           onRefresh: () async {
-            await Get.find<OrderController>().fetchOrders(_tabController!.index);
+            await Get.find<OrderController>()
+                .fetchOrders(_tabController!.index);
             refreshController.refreshCompleted();
           },
           controller: refreshController,
@@ -164,71 +169,70 @@ class _HomeScreenNewState extends State<HomeScreenNew>
 
   Widget _buildSearchField() {
     return Container(
-              height: 45,
-              margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
-              decoration: ShapeDecoration(
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              child: TextField(
-                controller: searchController,
-                onChanged: (value) {
-                  if (value.trim().isNotEmpty) {
-                    if (!isSearching) {
-                      setState(() {
-                        isSearching = true;
-                      });
-                    }
-                    _tabController?.index = 0;
-                    Get.find<OrderController>().searchOrder(value);
-                  } else {
+      height: 45,
+      margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+      decoration: ShapeDecoration(
+        color: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+      child: TextField(
+        controller: searchController,
+        onChanged: (value) {
+          if (value.trim().isNotEmpty) {
+            if (!isSearching) {
+              setState(() {
+                isSearching = true;
+              });
+            }
+            _tabController?.index = 0;
+            Get.find<OrderController>().searchOrder(value);
+          } else {
+            FocusScope.of(context).unfocus();
+            Get.find<OrderController>().fetchOrders(_tabController!.index);
+            if (isSearching) {
+              setState(() {
+                isSearching = true;
+              });
+            }
+          }
+        },
+        decoration: InputDecoration(
+          filled: true,
+          isDense: true,
+          fillColor: Colors.white,
+          border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide.none),
+          hintText: "Search by Order ID",
+          suffixIcon: isSearching
+              ? IconButton(
+                  onPressed: () {
                     FocusScope.of(context).unfocus();
+                    searchController.clear();
                     Get.find<OrderController>()
                         .fetchOrders(_tabController!.index);
+
                     if (isSearching) {
                       setState(() {
-                        isSearching = true;
+                        isSearching = false;
                       });
                     }
-                  }
-                },
-                decoration: InputDecoration(
-                  filled: true,
-                  isDense: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide.none),
-                  hintText: "Search by Order ID",
-                  suffixIcon: isSearching
-                      ? IconButton(
-                          onPressed: () {
-                            FocusScope.of(context).unfocus();
-                            searchController.clear();
-                            Get.find<OrderController>()
-                                .fetchOrders(_tabController!.index);
-
-                            if (isSearching) {
-                              setState(() {
-                                isSearching = false;
-                              });
-                            }
-                          },
-                          icon: const Icon(
-                            Icons.clear_rounded,
-                            color: Colors.black,
-                          ))
-                      : const Icon(Icons.search),
-                  hintStyle: const TextStyle(
-                    color: Color(0xFFBBB7B6),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            );
+                  },
+                  icon: const Icon(
+                    Icons.clear_rounded,
+                    color: Colors.black,
+                  ))
+              : const Icon(Icons.search),
+          hintStyle: const TextStyle(
+            color: Color(0xFFBBB7B6),
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _buildTabBar(BuildContext context) {
@@ -253,58 +257,130 @@ class _HomeScreenNewState extends State<HomeScreenNew>
       child: TabBarView(
         controller: _tabController,
         physics: const NeverScrollableScrollPhysics(),
-        children: List.generate(3, (index) => OrderListView(
-          activeTab: _tabController?.index ?? 0,
-          activeScreen: active_screen_index,
-        )),
+        children: List.generate(
+            3,
+            (index) => OrderListView(
+                  activeTab: _tabController?.index ?? 0,
+                  activeScreen: active_screen_index,
+                )),
       ),
     );
   }
+
   void _showGeneralSurgeDialog() {
-  TextEditingController timeController = TextEditingController();
+    TextEditingController timeController = TextEditingController();
 
-  showDialog(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: const Text("Set General Surge Time"),
-        content: TextField(
-          controller: timeController,
-          keyboardType: TextInputType.number,
-          decoration: const InputDecoration(
-            labelText: "Enter extra time in minutes",
-            border: OutlineInputBorder(),
+    // showDialog(
+    //   context: context,
+    //   builder: (context) {
+    //     return AlertDialog(
+    //       title: const Text("Set General Surge Time"),
+    //       content: TextField(
+    //         controller: timeController,
+    //         keyboardType: TextInputType.number,
+    //         decoration: const InputDecoration(
+    //           labelText: "Enter extra time in minutes",
+    //           border: OutlineInputBorder(),
+    //         ),
+    //       ),
+    //       actions: [
+    //         TextButton(
+    //           onPressed: () => Navigator.of(context).pop(),
+    //           child: const Text("Cancel"),
+    //         ),
+    //         ElevatedButton(
+    //           style: ElevatedButton.styleFrom(
+    //             foregroundColor: Colors.black, // This sets the text color
+    //             backgroundColor: const Color.fromARGB(255, 215, 215, 215),
+    //           ),
+    //           onPressed: () {
+    //             final enteredTime = int.tryParse(timeController.text);
+    //             if (enteredTime == null || enteredTime < 0) {
+    //               Get.snackbar("Invalid Input", "Please enter a valid number",
+    //                   backgroundColor: Colors.red.withOpacity(0.8),
+    //                   colorText: Colors.white);
+    //               return;
+    //             }
+    //             Navigator.of(context).pop();
+    //             Get.find<OrderController>().setGeneralSurge(enteredTime);
+    //           },
+    //           child: const Text("Apply Surge", style: TextStyle(color: Colors.black),),
+    //         ),
+    //       ],
+    //     );
+    //   },
+    // );
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true, // ensures keyboard pushes content up
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            left: 16,
+            right: 16,
+            top: 16,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 16,
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text("Cancel"),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "Set General Surge Time",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: timeController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: "Enter extra time in minutes",
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text("Cancel"),
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.black,
+                      backgroundColor: const Color.fromARGB(255, 215, 215, 215),
+                    ),
+                    onPressed: () {
+                      final enteredTime = int.tryParse(timeController.text);
+                      if (enteredTime == null || enteredTime < 0) {
+                        Get.snackbar(
+                          "Invalid Input",
+                          "Please enter a valid number",
+                          backgroundColor: Colors.red.withOpacity(0.8),
+                          colorText: Colors.white,
+                        );
+                        return;
+                      }
+                      Navigator.of(context).pop();
+                      Get.find<OrderController>().setGeneralSurge(enteredTime);
+                    },
+                    child: const Text(
+                      "Apply Surge",
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              foregroundColor: Colors.black, // This sets the text color
-              backgroundColor: const Color.fromARGB(255, 215, 215, 215),
-            ),
-            onPressed: () {
-              final enteredTime = int.tryParse(timeController.text);
-              if (enteredTime == null || enteredTime < 0) {
-                Get.snackbar("Invalid Input", "Please enter a valid number",
-                    backgroundColor: Colors.red.withOpacity(0.8),
-                    colorText: Colors.white);
-                return;
-              }
-              Navigator.of(context).pop();
-              Get.find<OrderController>().setGeneralSurge(enteredTime);
-            },
-            child: const Text("Apply Surge", style: TextStyle(color: Colors.black),),
-          ),
-        ],
-      );
-    },
-  );
-}
-
+        );
+      },
+    );
+  }
 }
 
 void _showLogoutDialog(BuildContext context) {

@@ -31,18 +31,18 @@ class _OrderItemState extends State<OrderItem> {
   bool isKitchenNoteSeen = false;
   var demoOrderDetails = DemoDataController().demoOrderDetails;
 
-
   @override
   void initState() {
     super.initState();
     isKitchenNoteSeen = widget.item.isKitchenNoteSeen ?? false;
 
     final orderController = Get.find<OrderController>();
-    
+
     if (orderController.isLoading) {
       orderDetails = Future.value(demoOrderDetails);
     } else {
-      var cachedDetails = orderController.cachedOrderDetails.where((e) => e.id == widget.item.id);
+      var cachedDetails = orderController.cachedOrderDetails
+          .where((e) => e.id == widget.item.id);
       if (cachedDetails.isNotEmpty) {
         debugPrint("Fetching order details from cache");
         orderDetails = Future.value(cachedDetails.first.details);
@@ -60,9 +60,9 @@ class _OrderItemState extends State<OrderItem> {
     setState(() {
       isKitchenNoteSeen = value;
     });
-    
+
     final orderController = Get.find<OrderController>();
-    
+
     orderController.markNoteAsSeen(widget.item.id!).catchError((error) {
       debugPrint("Error updating kitchen note status: $error");
       setState(() {
@@ -70,7 +70,6 @@ class _OrderItemState extends State<OrderItem> {
       });
     });
   }
-
 
   String formatTimeAgo(String inputDate) {
     // Parse the input date string into a DateTime object
@@ -101,7 +100,6 @@ class _OrderItemState extends State<OrderItem> {
 
   @override
   Widget build(BuildContext context) {
-
     DateTime? deliveryTime;
 
     if (widget.item.deliveryTime != null && widget.item.createdAt != null) {
@@ -117,8 +115,8 @@ class _OrderItemState extends State<OrderItem> {
       }
     }
 
-    bool isLate = (deliveryTime != null) ? DateTime.now().isAfter(deliveryTime) : false;
-
+    bool isLate =
+        (deliveryTime != null) ? DateTime.now().isAfter(deliveryTime) : false;
 
     return FutureBuilder<OrderDetailsModel>(
         future: orderDetails,
@@ -165,11 +163,13 @@ class _OrderItemState extends State<OrderItem> {
                               child: GestureDetector(
                                 onTap: () {
                                   if (widget.item.id == null) {
-                                    showCustomSnackBar("Error: Order ID is missing", isError: true);
+                                    showCustomSnackBar(
+                                        "Error: Order ID is missing",
+                                        isError: true);
                                     return;
                                   }
                                   showSurgeTimeDialog(widget.item.id!);
-                                }, 
+                                },
                                 child: const Text(
                                   "Individual surge",
                                   textAlign: TextAlign.center,
@@ -223,21 +223,20 @@ class _OrderItemState extends State<OrderItem> {
                           ],
                         ),
                         if (isLate)
-                            Container(
-                              height: 20,
-                              width: 50,
-                              decoration: BoxDecoration(
+                          Container(
+                            height: 20,
+                            width: 50,
+                            decoration: BoxDecoration(
                               color: Colors.red,
                               borderRadius: BorderRadius.circular(5),
                             ),
-                            child: const Text("Late",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.white
+                            child: const Text(
+                              "Late",
+                              textAlign: TextAlign.center,
+                              style:
+                                  TextStyle(fontSize: 12, color: Colors.white),
                             ),
-                            ),
-                            ),
+                          ),
                       ],
                     ),
                   ),
@@ -262,13 +261,25 @@ class _OrderItemState extends State<OrderItem> {
                                         fontSize: 12,
                                       ),
                                     ),
-                                    Checkbox(
-                                      value: isKitchenNoteSeen,
-                                      onChanged: (bool? value) {
-                                        if (value != null) {
-                                          markNoteAsSeen(value); // ✅ Pass the boolean value
-                                        }
-                                      },
+                                    Row(
+                                      children: [
+                                        const Text(
+                                          'Mark kitchen note as seen ',
+                                          style: TextStyle(
+                                            color: Color(0xFF868686),
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                        Checkbox(
+                                          value: isKitchenNoteSeen,
+                                          onChanged: (bool? value) {
+                                            if (value != null) {
+                                              markNoteAsSeen(
+                                                  value); // ✅ Pass the boolean value
+                                            }
+                                          },
+                                        ),
+                                      ],
                                     ),
                                     const Divider(
                                       color: Colors.grey,
@@ -302,18 +313,18 @@ class _OrderItemState extends State<OrderItem> {
                                     const SizedBox(height: 20),
                                   ],
                                 ),
-                              const Text(
-                                'ORDER SUMMARY',
-                                style: TextStyle(
-                                  color: Color(0xFF868686),
-                                  fontSize: 12,
+                                const Text(
+                                  'ORDER SUMMARY',
+                                  style: TextStyle(
+                                    color: Color(0xFF868686),
+                                    fontSize: 12,
+                                  ),
                                 ),
-                              ),
-                              const Divider(
-                                color: Colors.grey,
-                                height: 3,
-                              ),
-                            ],
+                                const Divider(
+                                  color: Colors.grey,
+                                  height: 3,
+                                ),
+                              ],
                             ],
                           ),
                         ),
@@ -466,47 +477,165 @@ class _OrderItemState extends State<OrderItem> {
           );
         });
   }
+
   void showSurgeTimeDialog(int orderId) {
-  TextEditingController timeController = TextEditingController();
+    TextEditingController timeController = TextEditingController();
 
-  showDialog(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: const Text("Set Extra Preparation Time"),
-        content: TextField(
-          controller: timeController,
-          keyboardType: TextInputType.number,
-          decoration: const InputDecoration(
-            labelText: "Enter time in minutes",
-            border: OutlineInputBorder(),
+    // showDialog(
+    //   context: context,
+    //   builder: (context) {
+    //     return AlertDialog(
+    //       title: const Text("Set Extra Preparation Time"),
+    //       content: SingleChildScrollView(
+    //         child: TextField(
+    //           controller: timeController,
+    //           keyboardType: TextInputType.number,
+    //           decoration: const InputDecoration(
+    //             labelText: "Enter time in minutes",
+    //             border: OutlineInputBorder(),
+    //           ),
+    //         ),
+    //       ),
+    //       actions: [
+    //         TextButton(
+    //           onPressed: () => Navigator.of(context).pop(),
+    //           child: const Text("Cancel"),
+    //         ),
+    //         ElevatedButton(
+    //           style: ElevatedButton.styleFrom(
+    //             foregroundColor: Colors.black, // This sets the text color
+    //             backgroundColor: const Color.fromARGB(255, 215, 215, 215),
+    //           ),
+    //           onPressed: () async {
+    //             final enteredTime = int.tryParse(timeController.text);
+    //             if (enteredTime == null || enteredTime < 0) {
+    //               showCustomSnackBar("Please enter a valid number",
+    //                   isError: true);
+    //               return;
+    //             }
+    //             Navigator.of(context).pop();
+    //             await Get.find<OrderController>()
+    //                 .setIndividualSurge(orderId, enteredTime);
+    //           },
+    //           child: const Text("Apply Surge"),
+    //         ),
+    //       ],
+    //     );
+    //   },
+    // );
+    // showDialog(
+    //   context: context,
+    //   builder: (context) {
+    //     return AlertDialog(
+    //       insetPadding: const EdgeInsets.symmetric(
+    //           horizontal: 20, vertical: 24), // Reduce padding
+    //       contentPadding: const EdgeInsets.all(16),
+    //       title: const Text("Set Extra Preparation Time"),
+    //       content: SingleChildScrollView(
+    //         child: Column(
+    //           mainAxisSize: MainAxisSize.min, // Prevent full height usage
+    //           children: [
+    //             TextField(
+    //               controller: timeController,
+    //               keyboardType: TextInputType.number,
+    //               decoration: const InputDecoration(
+    //                 labelText: "Enter time in minutes",
+    //                 border: OutlineInputBorder(),
+    //               ),
+    //             ),
+    //           ],
+    //         ),
+    //       ),
+    //       actions: [
+    //         TextButton(
+    //           onPressed: () => Navigator.of(context).pop(),
+    //           child: const Text("Cancel"),
+    //         ),
+    //         ElevatedButton(
+    //           style: ElevatedButton.styleFrom(
+    //             foregroundColor: Colors.black,
+    //             backgroundColor: const Color.fromARGB(255, 215, 215, 215),
+    //           ),
+    //           onPressed: () async {
+    //             final enteredTime = int.tryParse(timeController.text);
+    //             if (enteredTime == null || enteredTime < 0) {
+    //               showCustomSnackBar("Please enter a valid number",
+    //                   isError: true);
+    //               return;
+    //             }
+    //             Navigator.of(context).pop();
+    //             await Get.find<OrderController>()
+    //                 .setIndividualSurge(orderId, enteredTime);
+    //           },
+    //           child: const Text("Apply Surge"),
+    //         ),
+    //       ],
+    //     );
+    //   },
+    // );
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true, // Important for full height and keyboard safety
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            left: 16,
+            right: 16,
+            top: 16,
+            // Adjust padding based on keyboard
+            bottom: MediaQuery.of(context).viewInsets.bottom + 16,
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text("Cancel"),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                "Set Extra Preparation Time",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: timeController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: "Enter time in minutes",
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text("Cancel"),
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.black,
+                      backgroundColor: const Color.fromARGB(255, 215, 215, 215),
+                    ),
+                    onPressed: () async {
+                      final enteredTime = int.tryParse(timeController.text);
+                      if (enteredTime == null || enteredTime < 0) {
+                        showCustomSnackBar("Please enter a valid number",
+                            isError: true);
+                        return;
+                      }
+                      Navigator.of(context).pop();
+                      await Get.find<OrderController>()
+                          .setIndividualSurge(orderId, enteredTime);
+                    },
+                    child: const Text("Apply Surge"),
+                  ),
+                ],
+              ),
+            ],
           ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              foregroundColor: Colors.black, // This sets the text color
-              backgroundColor: const Color.fromARGB(255, 215, 215, 215),
-            ),
-            onPressed: () async {
-              final enteredTime = int.tryParse(timeController.text);
-              if (enteredTime == null || enteredTime < 0) {
-                showCustomSnackBar("Please enter a valid number", isError: true);
-                return;
-              }
-              Navigator.of(context).pop();
-              await Get.find<OrderController>().setIndividualSurge(orderId, enteredTime);
-            },
-            child: const Text("Apply Surge"),
-          ),
-        ],
-      );
-    },
-  );
-}
-
+        );
+      },
+    );
+  }
 }
